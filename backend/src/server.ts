@@ -4,6 +4,7 @@ import { config } from './config';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 import authRoutes from './routes/auth';
 import postRoutes from './routes/posts';
+import { pool } from './db';
 
 const app = express();
 
@@ -28,10 +29,18 @@ app.use(errorHandler);
 // Start server
 const PORT = config.port;
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`🚀 InkDrop backend running on port ${PORT}`);
   console.log(`📝 Environment: ${config.nodeEnv}`);
   console.log(`🔗 CORS enabled for: ${config.cors.origin}`);
+  
+  // Test database connection
+  try {
+    await pool.query('SELECT NOW()');
+    console.log('✓ Database connected');
+  } catch (error) {
+    console.error('✗ Database connection failed:', error);
+  }
 });
 
 export default app;
