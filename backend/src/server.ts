@@ -29,7 +29,7 @@ app.use(errorHandler);
 // Start server
 const PORT = config.port;
 
-app.listen(PORT, async () => {
+const server = app.listen(PORT, async () => {
   console.log(`🚀 InkDrop backend running on port ${PORT}`);
   console.log(`📝 Environment: ${config.nodeEnv}`);
   console.log(`🔗 CORS enabled for: ${config.cors.origin}`);
@@ -40,6 +40,18 @@ app.listen(PORT, async () => {
     console.log('✓ Database connected');
   } catch (error) {
     console.error('✗ Database connection failed:', error);
+  }
+});
+
+// Handle port already in use error
+server.on('error', (error: any) => {
+  if (error.code === 'EADDRINUSE') {
+    console.error(`\n❌ Port ${PORT} is already in use!`);
+    console.error(`💡 Run: npm run kill-port\n`);
+    process.exit(1);
+  } else {
+    console.error('Server error:', error);
+    process.exit(1);
   }
 });
 
