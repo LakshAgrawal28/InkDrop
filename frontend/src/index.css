@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-white text-ink-900 font-sans antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif font-bold;
+  }
+
+  /* Reading experience typography */
+  .prose {
+    @apply max-w-none;
+  }
+
+  .prose h1 {
+    @apply text-4xl mb-4 mt-8;
+  }
+
+  .prose h2 {
+    @apply text-3xl mb-3 mt-6;
+  }
+
+  .prose h3 {
+    @apply text-2xl mb-2 mt-5;
+  }
+
+  .prose p {
+    @apply text-lg leading-relaxed mb-4 text-ink-800;
+  }
+
+  .prose a {
+    @apply text-blue-600 hover:text-blue-800 underline;
+  }
+
+  .prose code {
+    @apply bg-ink-100 px-1.5 py-0.5 rounded text-sm font-mono;
+  }
+
+  .prose pre {
+    @apply bg-ink-900 text-ink-50 p-4 rounded-lg overflow-x-auto my-4;
+  }
+
+  .prose pre code {
+    @apply bg-transparent p-0;
+  }
+
+  .prose blockquote {
+    @apply border-l-4 border-ink-300 pl-4 italic text-ink-700 my-4;
+  }
+
+  .prose ul, .prose ol {
+    @apply ml-6 mb-4;
+  }
+
+  .prose li {
+    @apply mb-2;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2;
+  }
+
+  .btn-primary {
+    @apply bg-ink-900 text-white hover:bg-ink-800 focus:ring-ink-900;
+  }
+
+  .btn-secondary {
+    @apply bg-ink-100 text-ink-900 hover:bg-ink-200 focus:ring-ink-500;
+  }
+
+  .btn-ghost {
+    @apply bg-transparent text-ink-700 hover:bg-ink-100 focus:ring-ink-500;
+  }
+
+  .input {
+    @apply w-full px-4 py-2 border border-ink-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ink-900 focus:border-transparent;
+  }
+
+  .textarea {
+    @apply w-full px-4 py-2 border border-ink-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ink-900 focus:border-transparent resize-none;
+  }
+}
