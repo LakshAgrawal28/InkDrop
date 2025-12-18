@@ -9,7 +9,7 @@ services:
   - type: web
     name: inkdrop-backend
     runtime: node
-    plan: starter
+    plan: hobby
     buildCommand: cd backend && npm install && npm run build
     startCommand: cd backend && npm start
     envVars:
@@ -31,7 +31,7 @@ services:
   - type: web
     name: inkdrop-frontend
     runtime: static
-    plan: starter
+    plan: hobby
     buildCommand: cd frontend && npm install && npm run build
     staticPublishPath: ./frontend/dist
     envVars:
