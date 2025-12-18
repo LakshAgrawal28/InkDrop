@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { postService, Post } from '../services/postService';
+import ScrollReveal from '../components/ScrollReveal';
 
 export default function DraftsPage() {
   const [drafts, setDrafts] = useState<Post[]>([]);
@@ -73,10 +74,9 @@ export default function DraftsPage() {
         ) : (
           <div className="space-y-3 sm:space-y-4">
             {drafts.map((draft, index) => (
-              <div
-                key={draft.id}
-                className="bg-white dark:bg-gray-800 rounded-lg border border-ink-200 dark:border-gray-700 p-4 sm:p-6 hover:shadow-sm transition-all hover-lift animate-fade-in stagger-item"
-              >
+              <ScrollReveal key={draft.id} direction="left" delay={index * 0.05}>
+                <div
+                  className="bg-white dark:bg-gray-800 rounded-lg border border-ink-200 dark:border-gray-700 p-4 sm:p-6 hover:shadow-sm transition-all hover-lift">
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                   <div className="flex-1 min-w-0">
                     <h2 className="text-xl sm:text-2xl font-serif font-bold text-ink-900 dark:text-white mb-2 truncate sm:whitespace-normal">
@@ -108,6 +108,7 @@ export default function DraftsPage() {
                   </div>
                 </div>
               </div>
+            </ScrollReveal>
             ))}
           </div>
         )}
