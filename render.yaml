@@ -3,8 +3,6 @@ services:
   - type: pserv
     name: inkdrop-db
     plan: free
-    databaseName: inkdrop
-    user: inkdrop
     
   # Backend API
   - type: web
