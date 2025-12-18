@@ -75,7 +75,7 @@ export default function PostPage() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors">
-      <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
         {/* Post Header */}
         <header className="mb-12">
           {post.cover_image_url && (
@@ -86,11 +86,11 @@ export default function PostPage() {
             />
           )}
           
-          <h1 className="text-5xl font-serif font-bold text-ink-900 dark:text-white mb-6">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-ink-900 dark:text-white mb-4 sm:mb-6 leading-tight">
             {post.title}
           </h1>
           
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
             <div className="flex items-center space-x-4 text-ink-600 dark:text-gray-400">
               <div className="flex items-center space-x-2">
                 {post.author.avatar_url && (
@@ -117,16 +117,16 @@ export default function PostPage() {
             </div>
 
             {isAuthor && (
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center gap-2 sm:space-x-2">
                 <Link
                   to={`/editor?edit=${post.slug}`}
-                  className="btn btn-secondary text-sm"
+                  className="btn btn-secondary text-sm flex-1 sm:flex-none text-center"
                 >
                   Edit
                 </Link>
                 <button
                   onClick={handleDelete}
-                  className="btn btn-ghost text-sm text-red-600 hover:bg-red-50"
+                  className="btn btn-ghost text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 flex-1 sm:flex-none"
                 >
                   Delete
                 </button>
@@ -142,7 +142,7 @@ export default function PostPage() {
         </header>
 
         {/* Post Content */}
-        <div className="prose">
+        <div className="prose prose-sm sm:prose-base lg:prose-lg max-w-none">
           <ReactMarkdown remarkPlugins={[remarkGfm]}>
             {post.content}
           </ReactMarkdown>
