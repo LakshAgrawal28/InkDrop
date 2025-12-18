@@ -5,83 +5,123 @@
 ### Prerequisites
 - GitHub account
 - Render account (free): https://render.com
+- Code pushed to GitHub repository
 
-### Steps:
+### Manual Deployment Steps (RECOMMENDED):
 
-#### 1. Push to GitHub
-```bash
-cd "c:\Users\LAKSH AGRAWAL\Desktop\VSCode\InkDrop"
-git init
-git add .
-git commit -m "Initial commit"
-# Create a new repo on GitHub, then:
-git remote add origin https://github.com/YOUR_USERNAME/inkdrop.git
-git push -u origin main
-```
+#### Step 1: Create PostgreSQL Database
 
-#### 2. Create Environment Files
-
-Create `backend/.env.production`:
-```env
-NODE_ENV=production
-PORT=3000
-# These will be set by Render:
-# DATABASE_URL=
-# JWT_SECRET=
-# JWT_REFRESH_SECRET=
-```
-
-#### 3. Deploy on Render
-
-**Option A: Blueprint (Automatic)**
 1. Go to https://render.com/dashboard
-2. Click "New" → "Blueprint"
-3. Connect your GitHub repository
-4. Render will detect `render.yaml` and create all services
-5. Review and click "Apply"
+2. Click **"New +"** → **"PostgreSQL"**
+3. Configure:
+   - **Name:** `inkdrop-db`
+   - **Database:** `inkdrop` (or leave default)
+   - **User:** `inkdrop` (or leave default)
+   - **Region:** Choose closest to you
+   - **Plan:** **Free** (0.1 GB storage)
+4. Click **"Create Database"**
+5. Wait for database to be ready (~1 minute)
+6. Copy the **"Internal Database URL"** (starts with `postgresql://`)
 
-**Option B: Manual Setup**
-1. **Create PostgreSQL Database:**
-   - New → PostgreSQL
-   - Name: `inkdrop-db`
-   - Choose Free plan
-   - Copy the "Internal Database URL"
+#### Step 2: Deploy Backend Service
 
-2. **Deploy Backend:**
-   - New → Web Service
-   - Connect your GitHub repo
-   - Name: `inkdrop-backend`
-   - Root Directory: `backend`
-   - Build Command: `npm install && npm run build`
-   - Start Command: `npm start`
-   - Add Environment Variables:
-     ```
-     DATABASE_URL = [paste internal database URL]
-     JWT_SECRET = [generate random 64-char string]
-     JWT_REFRESH_SECRET = [generate random 64-char string]
-     NODE_ENV = production
-     ```
+1. Click **"New +"** → **"Web Service"**
+2. Connect your GitHub repository
+3. Configure:
+   - **Name:** `inkdrop-backend`
+   - **Region:** Same as database
+   - **Branch:** `main` (or your branch)
+   - **Root Directory:** `backend`
+   - **Runtime:** `Node`
+   - **Build Command:** `npm install && npm run build`
+   - **Start Command:** `npm start`
+   - **Plan:** **Free** (512 MB RAM)
+4. Click **"Advanced"** → **"Add Environment Variable"** and add:
+   ```
+   NODE_ENV = production
+   PORT = 3000
+   DATABASE_URL = [paste Internal Database URL from Step 1]
+   JWT_ACCESS_SECRET = [generate random 64-char string]
+   JWT_REFRESH_SECRET = [generate random 64-char string]
+   JWT_ACCESS_EXPIRY = 15m
+   JWT_REFRESH_EXPIRY = 7d
+   FRONTEND_URL = http://localhost:3000
+   ```
+   
+   **Generate secrets in PowerShell:**
+   ```powershell
+   -join ((65..90) + (97..122) + (48..57) | Get-Random -Count 64 | % {[char]$_})
+   ```
+   Run this twice to get two different secrets.
 
-3. **Deploy Frontend:**
-   - New → Static Site
-   - Connect your GitHub repo
-   - Name: `inkdrop-frontend`
-   - Root Directory: `frontend`
-   - Build Command: `npm install && npm run build`
-   - Publish Directory: `dist`
-   - Add Environment Variable:
-     ```
-     VITE_API_URL = https://inkdrop-backend.onrender.com
-     ```
-   - Add Rewrite Rule: `/*` → `/index.html`
+5. Click **"Create Web Service"**
+6. Wait for deployment (~3-5 minutes)
+7. **Copy your backend URL** (e.g., `https://inkdrop-backend-xyz.onrender.com`)
 
-4. **Run Database Migration:**
-   - Go to backend service dashboard
-   - Shell tab
-   - Run: `npm run db:migrate`
+#### Step 3: Run Database Migration
 
-#### 4. Update Frontend API URL
-After backend deploys, update frontend env var with actual backend URL.
+1. Go to your backend service dashboard
+2. Click **"Shell"** tab (left sidebar)
+3. Wait for shell to connect
+4. Run:
+   ```bash
+   npm run db:migrate
+   ```
+5. Verify success - should see "Migration completed successfully"
+
+#### Step 4: Deploy Frontend Service
+
+1. Click **"New +"** → **"Static Site"**
+2. Connect your GitHub repository
+3. Configure:
+   - **Name:** `inkdrop-frontend`
+   - **Branch:** `main`
+   - **Root Directory:** `frontend`
+   - **Build Command:** `npm install && npm run build`
+   - **Publish Directory:** `dist`
+   - **Plan:** **Free** (100 GB bandwidth)
+4. Click **"Advanced"** → **"Add Environment Variable"**:
+   ```
+   VITE_API_URL = [paste your backend URL from Step 2]
+   ```
+   Example: `https://inkdrop-backend-xyz.onrender.com`
+
+5. Add **Rewrite Rules** (for SPA routing):
+   - Click **"Redirects/Rewrites"**
+   - **Source:** `/*`
+   - **Destination:** `/index.html`
+   - **Action:** `Rewrite`
+
+6. Click **"Create Static Site"**
+7. Wait for deployment (~2-3 minutes)
+8. **Copy your frontend URL** (e.g., `https://inkdrop-frontend-xyz.onrender.com`)
+
+#### Step 5: Update Backend CORS
+
+1. Go back to backend service
+2. Click **"Environment"** tab
+3. Update the **FRONTEND_URL** variable:
+   ```
+   FRONTEND_URL = [paste your frontend URL from Step 4]
+   ```
+4. Service will auto-redeploy (~1 minute)
+
+#### Step 6: Test Your Application
+
+1. Open your frontend URL
+2. Register a new account
+3. Create a draft post
+4. Publish the post
+5. Test dark mode toggle
+6. Test animations (snowfall, ripples)
+
+**🎉 Your app is live!**
+
+---
+
+### Blueprint Deployment (Alternative - if manual works):
+
+If you prefer automated deployment after fixing issues:
 
 ---
 
