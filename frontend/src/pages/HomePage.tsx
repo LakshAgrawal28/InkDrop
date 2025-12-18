@@ -35,11 +35,11 @@ export default function HomePage() {
     <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
         {/* Hero */}
-        <div className="text-center mb-10 sm:mb-16">
+        <div className="text-center mb-10 sm:mb-16 animate-fade-in">
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold text-ink-900 dark:text-white mb-3 sm:mb-4">
             InkDrop
           </h1>
-          <p className="text-lg sm:text-xl text-ink-600 dark:text-gray-400">
+          <p className="text-lg sm:text-xl text-ink-600 dark:text-gray-400 animate-slide-in-right">
             A calm space for expressive writing
           </p>
         </div>
@@ -59,17 +59,17 @@ export default function HomePage() {
           </div>
         ) : (
           <div className="space-y-8 sm:space-y-12">
-            {posts.map((post) => (
+            {posts.map((post, index) => (
               <article
                 key={post.id}
-                className="border-b border-ink-200 dark:border-gray-700 pb-8 sm:pb-12 last:border-0"
+                className="border-b border-ink-200 dark:border-gray-700 pb-8 sm:pb-12 last:border-0 animate-fade-in stagger-item hover-lift"
               >
                 <Link to={`/post/${post.slug}`} className="group block">
                   {post.cover_image_url && (
                     <img
                       src={post.cover_image_url}
                       alt={post.title}
-                      className="w-full h-48 sm:h-64 object-cover rounded-lg mb-4 sm:mb-6"
+                      className="w-full h-48 sm:h-64 object-cover rounded-lg mb-4 sm:mb-6 transition-transform duration-300 group-hover:scale-[1.02]"
                     />
                   )}
                   

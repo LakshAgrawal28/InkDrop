@@ -46,7 +46,7 @@ export default function DraftsPage() {
   return (
     <div className="min-h-screen bg-ink-50 dark:bg-gray-900 transition-colors">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-0 mb-6 sm:mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-0 mb-6 sm:mb-8 animate-slide-in-left">
           <h1 className="text-3xl sm:text-4xl font-serif font-bold text-ink-900 dark:text-white">
             My Drafts
           </h1>
@@ -72,10 +72,10 @@ export default function DraftsPage() {
           </div>
         ) : (
           <div className="space-y-3 sm:space-y-4">
-            {drafts.map((draft) => (
+            {drafts.map((draft, index) => (
               <div
                 key={draft.id}
-                className="bg-white dark:bg-gray-800 rounded-lg border border-ink-200 dark:border-gray-700 p-4 sm:p-6 hover:shadow-sm transition-shadow"
+                className="bg-white dark:bg-gray-800 rounded-lg border border-ink-200 dark:border-gray-700 p-4 sm:p-6 hover:shadow-sm transition-all hover-lift animate-fade-in stagger-item"
               >
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                   <div className="flex-1 min-w-0">

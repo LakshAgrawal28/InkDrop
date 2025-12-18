@@ -100,7 +100,7 @@ export default function EditorPage() {
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors">
       {/* Editor Header */}
-      <div className="border-b border-ink-200 dark:border-gray-700 sticky top-0 bg-white dark:bg-gray-900 z-10">
+      <div className="border-b border-ink-200 dark:border-gray-700 sticky top-0 bg-white dark:bg-gray-900 z-10 animate-slide-down">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0">
             <div className="flex items-center space-x-3 sm:space-x-4 order-1 sm:order-none">
@@ -143,7 +143,7 @@ export default function EditorPage() {
       </div>
 
       {/* Editor Content */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 animate-fade-in">
         <input
           type="text"
           value={title}

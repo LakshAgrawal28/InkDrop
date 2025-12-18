@@ -29,7 +29,7 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-ink-50 dark:bg-gray-900 px-4 transition-colors">
-      <div className="max-w-md w-full">
+      <div className="max-w-md w-full animate-scale-in">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-serif font-bold text-ink-900 dark:text-white mb-2">
             Join InkDrop
@@ -39,7 +39,7 @@ export default function RegisterPage() {
           </p>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-ink-200 dark:border-gray-700 p-8">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-ink-200 dark:border-gray-700 p-8 hover-glow">
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">

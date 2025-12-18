@@ -32,7 +32,7 @@ export default function Navbar() {
           <div className="hidden md:flex items-center space-x-4">
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg text-ink-600 dark:text-gray-400 hover:bg-ink-100 dark:hover:bg-gray-800 transition-colors"
+              className="p-2 rounded-lg text-ink-600 dark:text-gray-400 hover:bg-ink-100 dark:hover:bg-gray-800 transition-all hover:scale-110 active:scale-95"
               aria-label="Toggle theme"
             >
               {theme === 'light' ? (
@@ -47,7 +47,7 @@ export default function Navbar() {
             </button>
             {isAuthenticated ? (
               <>
-                <Link to="/drafts" className="text-ink-700 dark:text-gray-300 hover:text-ink-900 dark:hover:text-white transition-colors">
+                <Link to="/drafts" className="text-ink-700 dark:text-gray-300 hover:text-ink-900 dark:hover:text-white transition-all hover:scale-105">
                   My Drafts
                 </Link>
                 <Link
@@ -62,7 +62,7 @@ export default function Navbar() {
                   </span>
                   <button
                     onClick={handleLogout}
-                    className="text-sm text-ink-600 dark:text-gray-400 hover:text-ink-900 dark:hover:text-white transition-colors"
+                    className="text-sm text-ink-600 dark:text-gray-400 hover:text-ink-900 dark:hover:text-white transition-all hover:scale-105"
                   >
                     Logout
                   </button>
@@ -70,7 +70,7 @@ export default function Navbar() {
               </>
             ) : (
               <>
-                <Link to="/login" className="text-ink-700 dark:text-gray-300 hover:text-ink-900 dark:hover:text-white transition-colors">
+                <Link to="/login" className="text-ink-700 dark:text-gray-300 hover:text-ink-900 dark:hover:text-white transition-all hover:scale-105">
                   Login
                 </Link>
                 <Link to="/register" className="btn btn-primary">
@@ -84,7 +84,7 @@ export default function Navbar() {
           <div className="flex md:hidden items-center space-x-2">
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg text-ink-600 dark:text-gray-400 hover:bg-ink-100 dark:hover:bg-gray-800 transition-colors"
+              className="p-2 rounded-lg text-ink-600 dark:text-gray-400 hover:bg-ink-100 dark:hover:bg-gray-800 transition-all hover:scale-110 active:scale-95"
               aria-label="Toggle theme"
             >
               {theme === 'light' ? (
@@ -99,7 +99,7 @@ export default function Navbar() {
             </button>
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 rounded-lg text-ink-600 dark:text-gray-400 hover:bg-ink-100 dark:hover:bg-gray-800 transition-colors"
+              className="p-2 rounded-lg text-ink-600 dark:text-gray-400 hover:bg-ink-100 dark:hover:bg-gray-800 transition-all hover:scale-110 active:scale-95"
               aria-label="Toggle menu"
             >
               {isMobileMenuOpen ? (
@@ -117,13 +117,13 @@ export default function Navbar() {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-ink-200 dark:border-gray-700">
+          <div className="md:hidden py-4 border-t border-ink-200 dark:border-gray-700 animate-slide-down">
             <div className="flex flex-col space-y-3">
               {isAuthenticated ? (
                 <>
                   <Link
                     to="/drafts"
-                    className="px-3 py-2 text-ink-700 dark:text-gray-300 hover:bg-ink-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                    className="px-3 py-2 text-ink-700 dark:text-gray-300 hover:bg-ink-100 dark:hover:bg-gray-800 rounded-lg transition-all hover:translate-x-1"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     My Drafts

@@ -75,14 +75,14 @@ export default function PostPage() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors">
-      <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
+      <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16 animate-fade-in">
         {/* Post Header */}
         <header className="mb-12">
           {post.cover_image_url && (
             <img
               src={post.cover_image_url}
               alt={post.title}
-              className="w-full h-96 object-cover rounded-lg mb-8"
+              className="w-full h-96 object-cover rounded-lg mb-8 animate-scale-in"
             />
           )}
           
@@ -117,7 +117,7 @@ export default function PostPage() {
             </div>
 
             {isAuthor && (
-              <div className="flex items-center gap-2 sm:space-x-2">
+              <div className="flex items-center gap-2 sm:space-x-2 animate-slide-in-right">
                 <Link
                   to={`/editor?edit=${post.slug}`}
                   className="btn btn-secondary text-sm flex-1 sm:flex-none text-center"

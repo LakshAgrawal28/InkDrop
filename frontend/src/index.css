@@ -7,6 +7,10 @@
     @apply bg-white dark:bg-gray-900 text-ink-900 dark:text-gray-100 font-sans antialiased transition-colors;
   }
 
+  * {
+    @apply transition-colors duration-200;
+  }
+
   h1, h2, h3, h4, h5, h6 {
     @apply font-serif font-bold text-ink-900 dark:text-white;
   }
@@ -63,11 +67,13 @@
 
 @layer components {
   .btn {
-    @apply px-3 py-2 sm:px-4 sm:py-2 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 text-sm sm:text-base;
+    @apply px-3 py-2 sm:px-4 sm:py-2 rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 text-sm sm:text-base;
+    @apply transform hover:scale-105 active:scale-95;
   }
 
   .btn-primary {
     @apply bg-ink-900 dark:bg-blue-600 text-white hover:bg-ink-800 dark:hover:bg-blue-700 focus:ring-ink-900 dark:focus:ring-blue-600;
+    @apply hover:shadow-lg;
   }
 
   .btn-secondary {
@@ -84,5 +90,123 @@
 
   .textarea {
     @apply w-full px-4 py-2 border border-ink-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-ink-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-ink-900 dark:focus:ring-blue-600 focus:border-transparent resize-none transition-colors;
+  }
+}
+
+/* Custom animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out;
+  }
+
+  .animate-slide-in-right {
+    animation: slideInRight 0.4s ease-out;
+  }
+
+  .animate-slide-in-left {
+    animation: slideInLeft 0.4s ease-out;
+  }
+
+  .animate-slide-down {
+    animation: slideDown 0.3s ease-out;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.3s ease-out;
+  }
+
+  .animate-pulse-slow {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  /* Stagger animations for lists */
+  .stagger-item:nth-child(1) { animation-delay: 0s; }
+  .stagger-item:nth-child(2) { animation-delay: 0.1s; }
+  .stagger-item:nth-child(3) { animation-delay: 0.2s; }
+  .stagger-item:nth-child(4) { animation-delay: 0.3s; }
+  .stagger-item:nth-child(5) { animation-delay: 0.4s; }
+  .stagger-item:nth-child(6) { animation-delay: 0.5s; }
+  .stagger-item:nth-child(7) { animation-delay: 0.6s; }
+  .stagger-item:nth-child(8) { animation-delay: 0.7s; }
+
+  /* Hover effects */
+  .hover-lift {
+    @apply transition-all duration-300;
+  }
+
+  .hover-lift:hover {
+    @apply transform -translate-y-1 shadow-lg;
+  }
+
+  .hover-glow {
+    @apply transition-all duration-300;
+  }
+
+  .hover-glow:hover {
+    @apply shadow-2xl ring-2 ring-blue-500 ring-opacity-50;
   }
 }
