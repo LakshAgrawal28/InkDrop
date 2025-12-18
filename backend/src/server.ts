@@ -26,33 +26,36 @@ app.use('/api/posts', postRoutes);
 app.use(notFoundHandler);
 app.use(errorHandler);
 
-// Start server
-const PORT = config.port;
-
-const server = app.listen(PORT, async () => {
-  console.log(`🚀 InkDrop backend running on port ${PORT}`);
-  console.log(`📝 Environment: ${config.nodeEnv}`);
-  console.log(`🔗 CORS enabled for: ${config.cors.origin}`);
-  
-  // Test database connection
-  try {
-    await pool.query('SELECT NOW()');
-    console.log('✓ Database connected');
-  } catch (error) {
-    console.error('✗ Database connection failed:', error);
-  }
-});
-
-// Handle port already in use error
-server.on('error', (error: any) => {
-  if (error.code === 'EADDRINUSE') {
-    console.error(`\n❌ Port ${PORT} is already in use!`);
-    console.error(`💡 Run: npm run kill-port\n`);
-    process.exit(1);
-  } else {
-    console.error('Server error:', error);
-    process.exit(1);
-  }
-});
-
+// Export app for serverless (Vercel)
 export default app;
+
+// Only start server if not in serverless environment
+if (process.env.VERCEL !== '1' && !process.env.AWS_LAMBDA_FUNCTION_NAME) {
+  const PORT = config.port;
+
+  const server = app.listen(PORT, async () => {
+    console.log(`🚀 InkDrop backend running on port ${PORT}`);
+    console.log(`📝 Environment: ${config.nodeEnv}`);
+    console.log(`🔗 CORS enabled for: ${config.cors.origin}`);
+    
+    // Test database connection
+    try {
+      await pool.query('SELECT NOW()');
+      console.log('✓ Database connected');
+    } catch (error) {
+      console.error('✗ Database connection failed:', error);
+    }
+  });
+
+  // Handle port already in use error
+  server.on('error', (error: any) => {
+    if (error.code === 'EADDRINUSE') {
+      console.error(`\n❌ Port ${PORT} is already in use!`);
+      console.error(`💡 Run: npm run kill-port\n`);
+      process.exit(1);
+    } else {
+      console.error('Server error:', error);
+      process.exit(1);
+    }
+  });
+}
