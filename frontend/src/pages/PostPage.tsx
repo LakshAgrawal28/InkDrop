@@ -1,14 +1,18 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { postService, PostWithAuthor } from '../services/postService';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function PostPage() {
   const { slug } = useParams<{ slug: string }>();
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const [post, setPost] = useState<PostWithAuthor | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  const [deleteError, setDeleteError] = useState('');
 
   useEffect(() => {
     if (slug) {
@@ -27,6 +31,24 @@ export default function PostPage() {
       setIsLoading(false);
     }
   };
+
+  const handleDelete = async () => {
+    if (!post) return;
+
+    if (!confirm('Delete this post? This cannot be undone.')) {
+      return;
+    }
+
+    try {
+      await postService.deletePost(post.id);
+      navigate('/');
+    } catch (err: any) {
+      setDeleteError('Failed to delete post');
+      console.error(err);
+    }
+  };
+
+  const isAuthor = user && post && user.id === post.author_id;
 
   if (isLoading) {
     return (
@@ -68,30 +90,55 @@ export default function PostPage() {
             {post.title}
           </h1>
           
-          <div className="flex items-center space-x-4 text-ink-600">
-            <div className="flex items-center space-x-2">
-              {post.author.avatar_url && (
-                <img
-                  src={post.author.avatar_url}
-                  alt={post.author.username}
-                  className="w-10 h-10 rounded-full"
-                />
-              )}
-              <span className="font-medium text-ink-900">
-                {post.author.username}
-              </span>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center space-x-4 text-ink-600">
+              <div className="flex items-center space-x-2">
+                {post.author.avatar_url && (
+                  <img
+                    src={post.author.avatar_url}
+                    alt={post.author.username}
+                    className="w-10 h-10 rounded-full"
+                  />
+                )}
+                <span className="font-medium text-ink-900">
+                  {post.author.username}
+                </span>
+              </div>
+              
+              <span>·</span>
+              
+              <time>
+                {new Date(post.published_at!).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
+              </time>
             </div>
-            
-            <span>·</span>
-            
-            <time>
-              {new Date(post.published_at!).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })}
-            </time>
+
+            {isAuthor && (
+              <div className="flex items-center space-x-2">
+                <Link
+                  to={`/editor?edit=${post.slug}`}
+                  className="btn btn-secondary text-sm"
+                >
+                  Edit
+                </Link>
+                <button
+                  onClick={handleDelete}
+                  className="btn btn-ghost text-sm text-red-600 hover:bg-red-50"
+                >
+                  Delete
+                </button>
+              </div>
+            )}
           </div>
+
+          {deleteError && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
+              {deleteError}
+            </div>
+          )}
         </header>
 
         {/* Post Content */}
