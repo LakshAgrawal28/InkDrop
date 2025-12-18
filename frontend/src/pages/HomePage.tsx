@@ -25,21 +25,21 @@ export default function HomePage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-ink-600">Loading posts...</div>
+      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900">
+        <div className="text-ink-600 dark:text-gray-400">Loading posts...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Hero */}
         <div className="text-center mb-16">
-          <h1 className="text-6xl font-serif font-bold text-ink-900 mb-4">
+          <h1 className="text-6xl font-serif font-bold text-ink-900 dark:text-white mb-4">
             InkDrop
           </h1>
-          <p className="text-xl text-ink-600">
+          <p className="text-xl text-ink-600 dark:text-gray-400">
             A calm space for expressive writing
           </p>
         </div>
@@ -53,7 +53,7 @@ export default function HomePage() {
         {/* Posts List */}
         {posts.length === 0 ? (
           <div className="text-center py-16">
-            <p className="text-ink-600 text-lg">
+            <p className="text-ink-600 dark:text-gray-400 text-lg">
               No posts yet. Be the first to write!
             </p>
           </div>
@@ -62,7 +62,7 @@ export default function HomePage() {
             {posts.map((post) => (
               <article
                 key={post.id}
-                className="border-b border-ink-200 pb-12 last:border-0"
+                className="border-b border-ink-200 dark:border-gray-700 pb-12 last:border-0"
               >
                 <Link to={`/post/${post.slug}`} className="group">
                   {post.cover_image_url && (
@@ -73,18 +73,18 @@ export default function HomePage() {
                     />
                   )}
                   
-                  <h2 className="text-3xl font-serif font-bold text-ink-900 mb-3 group-hover:text-ink-700 transition-colors">
+                  <h2 className="text-3xl font-serif font-bold text-ink-900 dark:text-white mb-3 group-hover:text-ink-700 dark:group-hover:text-gray-300 transition-colors">
                     {post.title}
                   </h2>
                   
                   {post.excerpt && (
-                    <p className="text-lg text-ink-600 mb-4 leading-relaxed">
+                    <p className="text-lg text-ink-600 dark:text-gray-400 mb-4 leading-relaxed">
                       {post.excerpt}
                     </p>
                   )}
                   
-                  <div className="flex items-center text-sm text-ink-500">
-                    <span className="font-medium text-ink-700">
+                  <div className="flex items-center text-sm text-ink-500 dark:text-gray-500">
+                    <span className="font-medium text-ink-700 dark:text-gray-300">
                       {post.author.username}
                     </span>
                     <span className="mx-2">·</span>

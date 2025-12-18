@@ -4,11 +4,11 @@
 
 @layer base {
   body {
-    @apply bg-white text-ink-900 font-sans antialiased;
+    @apply bg-white dark:bg-gray-900 text-ink-900 dark:text-gray-100 font-sans antialiased transition-colors;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-serif font-bold;
+    @apply font-serif font-bold text-ink-900 dark:text-white;
   }
 
   /* Reading experience typography */
@@ -17,31 +17,31 @@
   }
 
   .prose h1 {
-    @apply text-4xl mb-4 mt-8;
+    @apply text-4xl mb-4 mt-8 text-ink-900 dark:text-white;
   }
 
   .prose h2 {
-    @apply text-3xl mb-3 mt-6;
+    @apply text-3xl mb-3 mt-6 text-ink-900 dark:text-white;
   }
 
   .prose h3 {
-    @apply text-2xl mb-2 mt-5;
+    @apply text-2xl mb-2 mt-5 text-ink-900 dark:text-white;
   }
 
   .prose p {
-    @apply text-lg leading-relaxed mb-4 text-ink-800;
+    @apply text-lg leading-relaxed mb-4 text-ink-800 dark:text-gray-300;
   }
 
   .prose a {
-    @apply text-blue-600 hover:text-blue-800 underline;
+    @apply text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline;
   }
 
   .prose code {
-    @apply bg-ink-100 px-1.5 py-0.5 rounded text-sm font-mono;
+    @apply bg-ink-100 dark:bg-gray-800 text-ink-900 dark:text-gray-100 px-1.5 py-0.5 rounded text-sm font-mono;
   }
 
   .prose pre {
-    @apply bg-ink-900 text-ink-50 p-4 rounded-lg overflow-x-auto my-4;
+    @apply bg-ink-900 dark:bg-gray-950 text-ink-50 dark:text-gray-100 p-4 rounded-lg overflow-x-auto my-4;
   }
 
   .prose pre code {
@@ -49,7 +49,7 @@
   }
 
   .prose blockquote {
-    @apply border-l-4 border-ink-300 pl-4 italic text-ink-700 my-4;
+    @apply border-l-4 border-ink-300 dark:border-gray-600 pl-4 italic text-ink-700 dark:text-gray-400 my-4;
   }
 
   .prose ul, .prose ol {
@@ -57,7 +57,7 @@
   }
 
   .prose li {
-    @apply mb-2;
+    @apply mb-2 text-ink-800 dark:text-gray-300;
   }
 }
 
@@ -67,22 +67,22 @@
   }
 
   .btn-primary {
-    @apply bg-ink-900 text-white hover:bg-ink-800 focus:ring-ink-900;
+    @apply bg-ink-900 dark:bg-blue-600 text-white hover:bg-ink-800 dark:hover:bg-blue-700 focus:ring-ink-900 dark:focus:ring-blue-600;
   }
 
   .btn-secondary {
-    @apply bg-ink-100 text-ink-900 hover:bg-ink-200 focus:ring-ink-500;
+    @apply bg-ink-100 dark:bg-gray-800 text-ink-900 dark:text-gray-100 hover:bg-ink-200 dark:hover:bg-gray-700 focus:ring-ink-500 dark:focus:ring-gray-600;
   }
 
   .btn-ghost {
-    @apply bg-transparent text-ink-700 hover:bg-ink-100 focus:ring-ink-500;
+    @apply bg-transparent text-ink-700 dark:text-gray-300 hover:bg-ink-100 dark:hover:bg-gray-800 focus:ring-ink-500 dark:focus:ring-gray-600;
   }
 
   .input {
-    @apply w-full px-4 py-2 border border-ink-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ink-900 focus:border-transparent;
+    @apply w-full px-4 py-2 border border-ink-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-ink-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-ink-900 dark:focus:ring-blue-600 focus:border-transparent transition-colors;
   }
 
   .textarea {
-    @apply w-full px-4 py-2 border border-ink-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ink-900 focus:border-transparent resize-none;
+    @apply w-full px-4 py-2 border border-ink-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-ink-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-ink-900 dark:focus:ring-blue-600 focus:border-transparent resize-none transition-colors;
   }
 }

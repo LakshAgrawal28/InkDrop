@@ -52,20 +52,20 @@ export default function PostPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-ink-600">Loading post...</div>
+      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900">
+        <div className="text-ink-600 dark:text-gray-400">Loading post...</div>
       </div>
     );
   }
 
   if (error || !post) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900">
         <div className="text-center">
-          <h1 className="text-4xl font-serif font-bold text-ink-900 mb-4">
+          <h1 className="text-4xl font-serif font-bold text-ink-900 dark:text-white mb-4">
             {error || 'Post not found'}
           </h1>
-          <Link to="/" className="text-blue-600 hover:underline">
+          <Link to="/" className="text-blue-600 dark:text-blue-400 hover:underline">
             ← Back to home
           </Link>
         </div>
@@ -74,7 +74,7 @@ export default function PostPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors">
       <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Post Header */}
         <header className="mb-12">
@@ -86,12 +86,12 @@ export default function PostPage() {
             />
           )}
           
-          <h1 className="text-5xl font-serif font-bold text-ink-900 mb-6">
+          <h1 className="text-5xl font-serif font-bold text-ink-900 dark:text-white mb-6">
             {post.title}
           </h1>
           
           <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-4 text-ink-600">
+            <div className="flex items-center space-x-4 text-ink-600 dark:text-gray-400">
               <div className="flex items-center space-x-2">
                 {post.author.avatar_url && (
                   <img
@@ -100,7 +100,7 @@ export default function PostPage() {
                     className="w-10 h-10 rounded-full"
                   />
                 )}
-                <span className="font-medium text-ink-900">
+                <span className="font-medium text-ink-900 dark:text-white">
                   {post.author.username}
                 </span>
               </div>
@@ -150,7 +150,7 @@ export default function PostPage() {
 
         {/* Author Bio */}
         {post.author.bio && (
-          <div className="mt-16 pt-8 border-t border-ink-200">
+          <div className="mt-16 pt-8 border-t border-ink-200 dark:border-gray-700">
             <div className="flex items-start space-x-4">
               {post.author.avatar_url && (
                 <img
@@ -160,10 +160,10 @@ export default function PostPage() {
                 />
               )}
               <div>
-                <h3 className="text-xl font-serif font-bold text-ink-900 mb-2">
+                <h3 className="text-xl font-serif font-bold text-ink-900 dark:text-white mb-2">
                   {post.author.username}
                 </h3>
-                <p className="text-ink-600">
+                <p className="text-ink-600 dark:text-gray-400">
                   {post.author.bio}
                 </p>
               </div>
@@ -173,7 +173,7 @@ export default function PostPage() {
 
         {/* Back to Home */}
         <div className="mt-12 text-center">
-          <Link to="/" className="text-ink-600 hover:text-ink-900">
+          <Link to="/" className="text-ink-600 dark:text-gray-400 hover:text-ink-900 dark:hover:text-white transition-colors">
             ← Back to all posts
           </Link>
         </div>

@@ -37,17 +37,17 @@ export default function DraftsPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-ink-600">Loading drafts...</div>
+      <div className="min-h-screen flex items-center justify-center bg-ink-50 dark:bg-gray-900">
+        <div className="text-ink-600 dark:text-gray-400">Loading drafts...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-ink-50">
+    <div className="min-h-screen bg-ink-50 dark:bg-gray-900 transition-colors">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-4xl font-serif font-bold text-ink-900">
+          <h1 className="text-4xl font-serif font-bold text-ink-900 dark:text-white">
             My Drafts
           </h1>
           <Link to="/editor" className="btn btn-primary">
@@ -63,7 +63,7 @@ export default function DraftsPage() {
 
         {drafts.length === 0 ? (
           <div className="text-center py-16">
-            <p className="text-ink-600 text-lg mb-4">
+            <p className="text-ink-600 dark:text-gray-400 text-lg mb-4">
               No drafts yet
             </p>
             <Link to="/editor" className="btn btn-primary">
@@ -75,19 +75,19 @@ export default function DraftsPage() {
             {drafts.map((draft) => (
               <div
                 key={draft.id}
-                className="bg-white rounded-lg border border-ink-200 p-6 hover:shadow-sm transition-shadow"
+                className="bg-white dark:bg-gray-800 rounded-lg border border-ink-200 dark:border-gray-700 p-6 hover:shadow-sm transition-shadow"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <h2 className="text-2xl font-serif font-bold text-ink-900 mb-2">
+                    <h2 className="text-2xl font-serif font-bold text-ink-900 dark:text-white mb-2">
                       {draft.title}
                     </h2>
                     {draft.excerpt && (
-                      <p className="text-ink-600 mb-3">
+                      <p className="text-ink-600 dark:text-gray-400 mb-3">
                         {draft.excerpt}
                       </p>
                     )}
-                    <div className="text-sm text-ink-500">
+                    <div className="text-sm text-ink-500 dark:text-gray-500">
                       Last edited {new Date(draft.updated_at).toLocaleDateString()}
                     </div>
                   </div>

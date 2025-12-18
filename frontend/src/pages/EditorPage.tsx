@@ -98,19 +98,19 @@ export default function EditorPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors">
       {/* Editor Header */}
-      <div className="border-b border-ink-200 sticky top-0 bg-white z-10">
+      <div className="border-b border-ink-200 dark:border-gray-700 sticky top-0 bg-white dark:bg-gray-900 z-10">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <button
                 onClick={() => navigate('/drafts')}
-                className="text-ink-600 hover:text-ink-900"
+                className="text-ink-600 dark:text-gray-400 hover:text-ink-900 dark:hover:text-white transition-colors"
               >
                 ← Back to drafts
               </button>
-              <div className="text-sm text-ink-500">
+              <div className="text-sm text-ink-500 dark:text-gray-500">
                 {isSaving && 'Saving...'}
                 {!isSaving && lastSaved && `Saved ${formatTimeSince(lastSaved)}`}
                 {!isSaving && !lastSaved && 'Unsaved draft'}
@@ -149,39 +149,39 @@ export default function EditorPage() {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Post title..."
-          className="w-full text-5xl font-serif font-bold text-ink-900 placeholder-ink-300 focus:outline-none mb-8"
+          className="w-full text-5xl font-serif font-bold text-ink-900 dark:text-white placeholder-ink-300 dark:placeholder-gray-600 focus:outline-none mb-8 bg-transparent"
         />
 
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
           placeholder="Start writing... (Markdown supported)"
-          className="w-full min-h-[600px] text-xl text-ink-800 placeholder-ink-300 focus:outline-none resize-none font-serif leading-relaxed"
+          className="w-full min-h-[600px] text-xl text-ink-800 dark:text-gray-300 placeholder-ink-300 dark:placeholder-gray-600 focus:outline-none resize-none font-serif leading-relaxed bg-transparent"
         />
 
         {/* Markdown tips */}
-        <div className="mt-8 pt-8 border-t border-ink-200">
-          <h3 className="text-sm font-medium text-ink-700 mb-3">
+        <div className="mt-8 pt-8 border-t border-ink-200 dark:border-gray-700">
+          <h3 className="text-sm font-medium text-ink-700 dark:text-gray-300 mb-3">
             Markdown Tips
           </h3>
-          <div className="grid grid-cols-2 gap-4 text-sm text-ink-600">
+          <div className="grid grid-cols-2 gap-4 text-sm text-ink-600 dark:text-gray-400">
             <div>
-              <code className="bg-ink-100 px-2 py-1 rounded"># Heading 1</code>
+              <code className="bg-ink-100 dark:bg-gray-800 px-2 py-1 rounded"># Heading 1</code>
             </div>
             <div>
-              <code className="bg-ink-100 px-2 py-1 rounded">## Heading 2</code>
+              <code className="bg-ink-100 dark:bg-gray-800 px-2 py-1 rounded">## Heading 2</code>
             </div>
             <div>
-              <code className="bg-ink-100 px-2 py-1 rounded">**bold text**</code>
+              <code className="bg-ink-100 dark:bg-gray-800 px-2 py-1 rounded">**bold text**</code>
             </div>
             <div>
-              <code className="bg-ink-100 px-2 py-1 rounded">*italic text*</code>
+              <code className="bg-ink-100 dark:bg-gray-800 px-2 py-1 rounded">*italic text*</code>
             </div>
             <div>
-              <code className="bg-ink-100 px-2 py-1 rounded">[link](url)</code>
+              <code className="bg-ink-100 dark:bg-gray-800 px-2 py-1 rounded">[link](url)</code>
             </div>
             <div>
-              <code className="bg-ink-100 px-2 py-1 rounded">`code`</code>
+              <code className="bg-ink-100 dark:bg-gray-800 px-2 py-1 rounded">`code`</code>
             </div>
           </div>
         </div>

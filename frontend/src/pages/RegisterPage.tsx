@@ -28,18 +28,18 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-ink-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-ink-50 dark:bg-gray-900 px-4 transition-colors">
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-serif font-bold text-ink-900 mb-2">
+          <h1 className="text-4xl font-serif font-bold text-ink-900 dark:text-white mb-2">
             Join InkDrop
           </h1>
-          <p className="text-ink-600">
+          <p className="text-ink-600 dark:text-gray-400">
             Start your writing journey today
           </p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-ink-200 p-8">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-ink-200 dark:border-gray-700 p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
@@ -48,7 +48,7 @@ export default function RegisterPage() {
             )}
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-ink-700 mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-ink-700 dark:text-gray-300 mb-2">
                 Email
               </label>
               <input
@@ -64,7 +64,7 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <label htmlFor="username" className="block text-sm font-medium text-ink-700 mb-2">
+              <label htmlFor="username" className="block text-sm font-medium text-ink-700 dark:text-gray-300 mb-2">
                 Username
               </label>
               <input
@@ -80,13 +80,13 @@ export default function RegisterPage() {
                 pattern="[a-zA-Z0-9_-]+"
                 title="Username can only contain letters, numbers, hyphens, and underscores"
               />
-              <p className="text-xs text-ink-500 mt-1">
+              <p className="text-xs text-ink-500 dark:text-gray-500 mt-1">
                 3-50 characters, letters, numbers, hyphens, and underscores only
               </p>
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-ink-700 mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-ink-700 dark:text-gray-300 mb-2">
                 Password
               </label>
               <input
@@ -99,7 +99,7 @@ export default function RegisterPage() {
                 required
                 minLength={8}
               />
-              <p className="text-xs text-ink-500 mt-1">
+              <p className="text-xs text-ink-500 dark:text-gray-500 mt-1">
                 At least 8 characters
               </p>
             </div>
@@ -114,9 +114,9 @@ export default function RegisterPage() {
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-sm text-ink-600">
+            <p className="text-sm text-ink-600 dark:text-gray-400">
               Already have an account?{' '}
-              <Link to="/login" className="text-ink-900 font-medium hover:underline">
+              <Link to="/login" className="text-ink-900 dark:text-white font-medium hover:underline">
                 Sign in
               </Link>
             </p>

@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
 import HomePage from './pages/HomePage';
@@ -13,8 +14,9 @@ import './index.css';
 function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <div className="min-h-screen bg-white">
+      <ThemeProvider>
+        <AuthProvider>
+          <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors">
           <Navbar />
           <Routes>
             <Route path="/" element={<HomePage />} />
@@ -38,8 +40,9 @@ function App() {
               }
             />
           </Routes>
-        </div>
-      </AuthProvider>
+          </div>
+        </AuthProvider>
+      </ThemeProvider>
     </BrowserRouter>
   );
 }

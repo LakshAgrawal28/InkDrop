@@ -27,18 +27,18 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-ink-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-ink-50 dark:bg-gray-900 px-4 transition-colors">
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-serif font-bold text-ink-900 mb-2">
+          <h1 className="text-4xl font-serif font-bold text-ink-900 dark:text-white mb-2">
             Welcome back
           </h1>
-          <p className="text-ink-600">
+          <p className="text-ink-600 dark:text-gray-400">
             Sign in to continue writing
           </p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-ink-200 p-8">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-ink-200 dark:border-gray-700 p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
@@ -47,7 +47,7 @@ export default function LoginPage() {
             )}
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-ink-700 mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-ink-700 dark:text-gray-300 mb-2">
                 Email
               </label>
               <input
@@ -63,7 +63,7 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-ink-700 mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-ink-700 dark:text-gray-300 mb-2">
                 Password
               </label>
               <input
@@ -87,9 +87,9 @@ export default function LoginPage() {
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-sm text-ink-600">
+            <p className="text-sm text-ink-600 dark:text-gray-400">
               Don't have an account?{' '}
-              <Link to="/register" className="text-ink-900 font-medium hover:underline">
+              <Link to="/register" className="text-ink-900 dark:text-white font-medium hover:underline">
                 Sign up
               </Link>
             </p>
