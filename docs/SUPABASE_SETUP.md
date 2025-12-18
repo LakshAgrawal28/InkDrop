@@ -32,40 +32,73 @@
 
 ## Step 2: Get Database Connection Strings
 
-### 2.1: Navigate to Database Settings
+### 2.1: Click the Connect Button
 
 1. In your Supabase project dashboard
-2. Click **"Settings"** (gear icon) in left sidebar
-3. Click **"Database"**
-4. Scroll to **"Connection string"** section
+2. Look at the **top right corner** of the page
+3. Click the **"Connect"** button (next to your project name)
+4. A modal will open: "Connect to your project"
 
-### 2.2: Copy Connection Strings
+### 2.2: Get BOTH Connection Strings
 
-You'll see two types of connection strings:
+You need to copy TWO different connection strings from this modal:
 
-#### **URI (Session Mode)** - For local development
+#### **Connection String #1: Direct Connection (Port 5432)**
+
+**For:** Local development & Database migrations
+
+**How to get it:**
+1. In the Connect modal, look for the **"Method"** dropdown
+2. Select **"Direct connection"**
+3. Copy the connection string shown
+4. It will look like:
 ```
 postgresql://postgres:[YOUR-PASSWORD]@db.xxxxx.supabase.co:5432/postgres
 ```
 
-#### **Connection Pooling (Transaction Mode)** - For Vercel serverless ⭐ RECOMMENDED
+#### **Connection String #2: Session Pooler (Port 6543)** ⭐
+
+**For:** Vercel serverless backend (Production)
+
+**How to get it:**
+1. In the same Connect modal, change the **"Method"** dropdown
+2. Select **"Session pooler"** or **"Transaction pooler"**
+3. Copy the connection string shown
+4. It will look like:
 ```
-postgresql://postgres:[YOUR-PASSWORD]@db.xxxxx.supabase.co:6543/postgres?pgbouncer=true
+postgresql://postgres.[project-ref]:[YOUR-PASSWORD]@aws-0-[region].pooler.supabase.com:6543/postgres
+```
+
+### 2.3: Replace the Password
+
+**CRITICAL:** Both connection strings will have `[YOUR-PASSWORD]` as a placeholder.
+
+**You must replace it with your actual database password:**
+- This is the password you set when creating the Supabase project
+- **Don't have it?** Go to Settings → Database → Click "Reset database password"
+
+**Example:**
+```
+# Before (what you copy):
+postgresql://postgres:[YOUR-PASSWORD]@db.abc123.supabase.co:5432/postgres
+
+# After (what you use):
+postgresql://postgres:MySecurePass123@db.abc123.supabase.co:5432/postgres
 ```
 
 **Important Notes:**
 - Port `5432` = Direct connection (use for local/migrations)
 - Port `6543` = Connection pooling via PgBouncer (use for Vercel)
-- Replace `[YOUR-PASSWORD]` with your actual database password
+- Save both connection strings - you'll need them in the next steps
 
-### 2.3: Which Connection String to Use?
+### 2.4: Which Connection String to Use?
 
-| Use Case | Connection String | Port |
-|----------|------------------|------|
-| **Vercel Backend** | Transaction/Pooling | 6543 |
-| **Local Development** | Session/URI | 5432 |
-| **Database Migration** | Session/URI | 5432 |
-| **Direct Queries** | Session/URI | 5432 |
+| Task | Port | Connection Type |
+|------|------|----------------|
+| **Run database migration** | 5432 | Direct connection |
+| **Local backend development** | 5432 | Direct connection |
+| **Deploy to Vercel** | 6543 | Session pooler |
+| **Production backend** | 6543 | Session pooler |
 
 ---
 
@@ -104,19 +137,22 @@ You can add these to your connection string:
 
 ## Step 4: Run Database Migration
 
-### 4.1: Set Up Local Environment
-
-Create `backend/.env.local`:
-```env
-DATABASE_URL=postgresql://postgres:[PASSWORD]@db.[PROJECT-REF].supabase.co:5432/postgres
-```
-
-### 4.2: Run Migration
+### 4.1: Use the Direct Connection String (Port 5432)
 
 ```powershell
 cd backend
+
+# Set the DATABASE_URL with your Direct connection string (port 5432)
+$env:DATABASE_URL="postgresql://postgres:YourPassword@db.xxxxx.supabase.co:5432/postgres"
+
+# Run migration
 npm run db:migrate
 ```
+
+**Important:** Make sure you:
+- Use port **5432** (not 6543)
+- Replaced `[YOUR-PASSWORD]` with your actual password
+- Are in the `backend` folder
 
 You should see:
 ```
@@ -140,15 +176,25 @@ Migration completed successfully!
 
 ## Step 5: Deploy Backend to Vercel
 
-### 5.1: Environment Variables
+### 5.1: Add Environment Variables in Vercel
 
-In Vercel dashboard, add these environment variables:
+**In your Vercel backend project settings:**
+
+1. Go to **Settings** → **Environment Variables**
+2. Add each variable below:
 
 ```env
 NODE_ENV=production
-DATABASE_URL=postgresql://postgres:[PASSWORD]@db.[PROJECT-REF].supabase.co:6543/postgres?pgbouncer=true&connection_limit=1
-JWT_SECRET=[generate-64-char-string]
-JWT_REFRESH_SECRET=[generate-64-char-string]
+```
+
+```env
+DATABASE_URL=postgresql://postgres:YourPassword@aws-0-region.pooler.supabase.com:6543/postgres
+```
+**⚠️ Use your Session Pooler string (port 6543) - NOT the direct connection!**
+
+```env
+JWT_SECRET=<your-64-char-string>
+JWT_REFRESH_SECRET=<your-64-char-string>
 JWT_ACCESS_EXPIRY=15m
 JWT_REFRESH_EXPIRY=7d
 FRONTEND_URL=https://your-frontend.vercel.app

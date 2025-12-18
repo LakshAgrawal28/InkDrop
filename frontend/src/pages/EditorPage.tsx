@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { postService, Post } from '../services/postService';
+import { postService } from '../services/postService';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function EditorPage() {
