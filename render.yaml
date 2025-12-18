@@ -1,9 +1,10 @@
-services:
-  # PostgreSQL Database
-  - type: pserv
-    name: inkdrop-db
+databases:
+  - name: inkdrop-db
     plan: free
-    
+    databaseName: inkdrop
+    user: inkdrop
+
+services:
   # Backend API
   - type: web
     name: inkdrop-backend
