@@ -23,7 +23,7 @@ InkDrop/
 ### Backend Stack
 - **Runtime**: Node.js + TypeScript
 - **Framework**: Express.js
-- **Database**: PostgreSQL
+- **Database**: PostgreSQL (Neon recommended for production)
 - **Authentication**: JWT (access + refresh tokens)
 - **Validation**: express-validator
 
@@ -40,10 +40,24 @@ InkDrop/
 ### Prerequisites
 
 - Node.js 18+
-- PostgreSQL 14+
+- PostgreSQL 14+ (local) **OR** Neon DB (cloud - recommended for production)
 - npm or yarn
 
 ### 1. Setup Database
+
+#### Option A: Neon DB (Recommended for Production/Resume Projects)
+
+**Perfect for deployment** - Serverless PostgreSQL that never pauses!
+
+1. Sign up at [console.neon.tech](https://console.neon.tech) (free, no credit card)
+2. Create a new project named `inkdrop`
+3. Enable **Connection Pooling**
+4. Copy your connection string (looks like: `postgresql://neondb_owner:***@ep-xxx-pooler.region.aws.neon.tech/neondb?sslmode=require`)
+5. Use it in your `.env` file
+
+📖 **See [NEON_MIGRATION.md](docs/NEON_MIGRATION.md) for detailed guide**
+
+#### Option B: Local PostgreSQL
 
 ```bash
 # Create PostgreSQL database
