@@ -17,19 +17,19 @@
   }
 
   .prose h1 {
-    @apply text-3xl sm:text-4xl mb-4 mt-8 text-ink-900 dark:text-white;
+    @apply text-[2.25em] leading-tight mb-4 mt-8 text-ink-900 dark:text-white;
   }
 
   .prose h2 {
-    @apply text-2xl sm:text-3xl mb-3 mt-6 text-ink-900 dark:text-white;
+    @apply text-[1.75em] leading-snug mb-3 mt-6 text-ink-900 dark:text-white;
   }
 
   .prose h3 {
-    @apply text-xl sm:text-2xl mb-2 mt-5 text-ink-900 dark:text-white;
+    @apply text-[1.375em] leading-snug mb-2 mt-5 text-ink-900 dark:text-white;
   }
 
   .prose p {
-    @apply text-base sm:text-lg leading-relaxed mb-4 text-ink-800 dark:text-gray-300;
+    @apply leading-relaxed mb-4 text-ink-800 dark:text-gray-300;
   }
 
   .prose a {
@@ -37,7 +37,7 @@
   }
 
   .prose code {
-    @apply bg-ink-100 dark:bg-gray-800 text-ink-900 dark:text-gray-100 px-1.5 py-0.5 rounded text-sm font-mono;
+    @apply bg-ink-100 dark:bg-gray-800 text-ink-900 dark:text-gray-100 px-1.5 py-0.5 rounded text-[0.875em] font-mono;
   }
 
   .prose pre {
@@ -63,31 +63,69 @@
 
 @layer components {
   .btn {
-    @apply px-3 py-2 sm:px-4 sm:py-2 rounded-lg font-medium transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 text-sm sm:text-base;
-    @apply transform hover:scale-[1.02] active:scale-[0.98];
+    @apply px-4 py-2 sm:px-5 sm:py-2.5 rounded-none font-sans font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-1 focus:ring-offset-2 text-sm uppercase tracking-wider;
+    @apply transform active:scale-[0.98];
   }
 
   .btn-primary {
-    @apply bg-ink-900 dark:bg-blue-600 text-white hover:bg-ink-800 dark:hover:bg-blue-700 focus:ring-ink-900 dark:focus:ring-blue-600;
-    @apply hover:shadow-lg transition-shadow duration-300;
+    @apply bg-black dark:bg-white text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-100 focus:ring-black dark:focus:ring-white;
+    @apply border border-black dark:border-white;
   }
 
   .btn-secondary {
-    @apply bg-ink-100 dark:bg-gray-800 text-ink-900 dark:text-gray-100 hover:bg-ink-200 dark:hover:bg-gray-700 focus:ring-ink-500 dark:focus:ring-gray-600;
+    @apply bg-transparent text-black dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 focus:ring-neutral-500 dark:focus:ring-neutral-400;
+    @apply border border-black/20 dark:border-white/20;
   }
 
   .btn-ghost {
-    @apply bg-transparent text-ink-700 dark:text-gray-300 hover:bg-ink-100 dark:hover:bg-gray-800 focus:ring-ink-500 dark:focus:ring-gray-600;
+    @apply bg-transparent text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white focus:ring-neutral-500;
   }
 
   .input {
-    @apply w-full px-4 py-2 border border-ink-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-ink-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-ink-900 dark:focus:ring-blue-600 focus:border-transparent transition-all duration-200;
-    @apply placeholder:text-ink-400 dark:placeholder:text-gray-500;
+    @apply w-full px-4 py-3 border-b border-neutral-300 dark:border-neutral-700 bg-transparent text-black dark:text-white rounded-none focus:outline-none focus:border-black dark:focus:border-white transition-colors duration-300;
+    @apply placeholder:text-neutral-400 dark:placeholder:text-neutral-600;
   }
 
   .textarea {
-    @apply w-full px-4 py-2 border border-ink-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-ink-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-ink-900 dark:focus:ring-blue-600 focus:border-transparent resize-none transition-all duration-200;
-    @apply placeholder:text-ink-400 dark:placeholder:text-gray-500;
+    @apply w-full px-4 py-3 border border-neutral-200 dark:border-neutral-800 bg-transparent text-black dark:text-white rounded-none focus:outline-none focus:border-black dark:focus:border-white resize-none transition-colors duration-300;
+    @apply placeholder:text-neutral-400 dark:placeholder:text-neutral-600;
+  }
+
+  /* Custom minimalist spinner loader */
+  .editorial-loader {
+    @apply w-10 h-10 border-2 border-neutral-300 dark:border-neutral-700 border-t-black dark:border-t-white rounded-full animate-spin;
+  }
+
+  /* Skeleton Loading Card Animation */
+  .skeleton-shimmer {
+    background: linear-gradient(
+      90deg,
+      rgba(240, 240, 240, 0.6) 25%,
+      rgba(230, 230, 230, 0.9) 37%,
+      rgba(240, 240, 240, 0.6) 63%
+    );
+    background-size: 400% 100%;
+    animation: skeleton-load 1.4s ease infinite;
+  }
+
+  .dark .skeleton-shimmer {
+    background: linear-gradient(
+      90deg,
+      rgba(30, 30, 30, 0.6) 25%,
+      rgba(40, 40, 40, 0.9) 37%,
+      rgba(30, 30, 30, 0.6) 63%
+    );
+    background-size: 400% 100%;
+    animation: skeleton-load 1.4s ease infinite;
+  }
+
+  @keyframes skeleton-load {
+    0% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0 50%;
+    }
   }
 }
 

@@ -18,21 +18,21 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="border-b border-ink-200 dark:border-gray-700 bg-white dark:bg-gray-900 transition-colors sticky top-0 z-50">
+    <nav className="border-b border-neutral-100 dark:border-neutral-900 bg-white/80 dark:bg-[#0b0c10]/80 backdrop-blur-md transition-colors sticky top-0 z-50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <span className="text-xl sm:text-2xl font-serif font-bold text-ink-900 dark:text-white">
-              InkDrop
+          <Link to="/" className="flex items-center space-x-2 tracking-widest">
+            <span className="text-lg font-sans font-extrabold uppercase text-neutral-900 dark:text-white">
+              INKDROP
             </span>
           </Link>
-
+ 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden md:flex items-center space-x-8">
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg text-ink-600 dark:text-gray-400 hover:bg-ink-100 dark:hover:bg-gray-800 transition-all hover:scale-110 active:scale-95"
+              className="p-2 text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors duration-200"
               aria-label="Toggle theme"
             >
               {theme === 'light' ? (
@@ -47,22 +47,22 @@ export default function Navbar() {
             </button>
             {isAuthenticated ? (
               <>
-                <Link to="/drafts" className="text-ink-700 dark:text-gray-300 hover:text-ink-900 dark:hover:text-white transition-all hover:scale-105">
-                  My Drafts
+                <Link to="/drafts" className="text-xs uppercase tracking-widest font-semibold text-neutral-600 dark:text-neutral-300 hover:text-black dark:hover:text-white transition-colors">
+                  Drafts
                 </Link>
                 <Link
                   to="/editor"
-                  className="btn btn-primary"
+                  className="btn btn-primary text-xs"
                 >
-                  New Post
+                  NEW POST
                 </Link>
-                <div className="flex items-center space-x-3 pl-4 border-l border-ink-200 dark:border-gray-700">
-                  <span className="text-sm text-ink-600 dark:text-gray-400">
+                <div className="flex items-center space-x-4 pl-6 border-l border-neutral-200 dark:border-neutral-800">
+                  <span className="text-xs uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
                     {user?.username}
                   </span>
                   <button
                     onClick={handleLogout}
-                    className="text-sm text-ink-600 dark:text-gray-400 hover:text-ink-900 dark:hover:text-white transition-all hover:scale-105"
+                    className="text-xs uppercase tracking-widest font-semibold text-neutral-500 hover:text-black dark:hover:text-white transition-colors"
                   >
                     Logout
                   </button>
@@ -70,11 +70,11 @@ export default function Navbar() {
               </>
             ) : (
               <>
-                <Link to="/login" className="text-ink-700 dark:text-gray-300 hover:text-ink-900 dark:hover:text-white transition-all hover:scale-105">
+                <Link to="/login" className="text-xs uppercase tracking-widest font-semibold text-neutral-600 dark:text-neutral-300 hover:text-black dark:hover:text-white transition-colors">
                   Login
                 </Link>
-                <Link to="/register" className="btn btn-primary">
-                  Sign Up
+                <Link to="/register" className="btn btn-primary text-xs">
+                  SIGN UP
                 </Link>
               </>
             )}
@@ -117,33 +117,33 @@ export default function Navbar() {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-ink-200 dark:border-gray-700 animate-slide-down">
-            <div className="flex flex-col space-y-3">
+          <div className="md:hidden py-4 border-t border-neutral-200 dark:border-neutral-800 animate-slide-down">
+            <div className="flex flex-col space-y-3 px-2">
               {isAuthenticated ? (
                 <>
                   <Link
                     to="/drafts"
-                    className="px-3 py-2 text-ink-700 dark:text-gray-300 hover:bg-ink-100 dark:hover:bg-gray-800 rounded-lg transition-all hover:translate-x-1"
+                    className="px-3 py-2 text-xs uppercase tracking-widest font-semibold text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-all hover:translate-x-1"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    My Drafts
+                    Drafts
                   </Link>
                   <Link
                     to="/editor"
-                    className="px-3 py-2 bg-ink-900 dark:bg-blue-600 text-white rounded-lg text-center hover:bg-ink-800 dark:hover:bg-blue-700 transition-colors"
+                    className="px-3 py-2.5 bg-black dark:bg-white text-white dark:text-black text-xs uppercase tracking-widest text-center hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-colors"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    New Post
+                    NEW POST
                   </Link>
-                  <div className="px-3 py-2 text-sm text-ink-600 dark:text-gray-400 border-t border-ink-200 dark:border-gray-700 pt-3">
-                    Signed in as <span className="font-medium">{user?.username}</span>
+                  <div className="px-3 py-2 text-xs uppercase tracking-wider text-neutral-500 dark:text-neutral-400 border-t border-neutral-200 dark:border-neutral-800 pt-3">
+                    Signed in as <span className="font-bold text-neutral-800 dark:text-neutral-200">{user?.username}</span>
                   </div>
                   <button
                     onClick={() => {
                       handleLogout();
                       setIsMobileMenuOpen(false);
                     }}
-                    className="px-3 py-2 text-left text-ink-700 dark:text-gray-300 hover:bg-ink-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                    className="px-3 py-2 text-left text-xs uppercase tracking-widest font-semibold text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors"
                   >
                     Logout
                   </button>
@@ -152,17 +152,17 @@ export default function Navbar() {
                 <>
                   <Link
                     to="/login"
-                    className="px-3 py-2 text-ink-700 dark:text-gray-300 hover:bg-ink-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                    className="px-3 py-2 text-xs uppercase tracking-widest font-semibold text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Login
                   </Link>
                   <Link
                     to="/register"
-                    className="px-3 py-2 bg-ink-900 dark:bg-blue-600 text-white rounded-lg text-center hover:bg-ink-800 dark:hover:bg-blue-700 transition-colors"
+                    className="px-3 py-2.5 bg-black dark:bg-white text-white dark:text-black text-xs uppercase tracking-widest text-center hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-colors"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    Sign Up
+                    SIGN UP
                   </Link>
                 </>
               )}

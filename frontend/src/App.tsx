@@ -38,23 +38,23 @@ function AppContent() {
           }}
         />
       )}
-      <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors">
+      <div className="min-h-screen bg-neutral-50 dark:bg-[#0b0c10] transition-colors">
         {/* Effects Toggle Buttons */}
-        <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col gap-1.5 sm:gap-2">
+        <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col gap-1.5">
           <button
             onClick={() => setShowSnowfall(!showSnowfall)}
-            className="p-2 sm:p-3 rounded-full bg-white dark:bg-gray-800 shadow-lg border border-ink-200 dark:border-gray-700 hover:scale-110 transition-all text-base sm:text-xl"
+            className="p-2.5 bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors text-sm flex items-center justify-center"
             aria-label="Toggle snowfall"
-            title={showSnowfall ? 'Hide snowfall' : 'Show snowfall'}
+            title={showSnowfall ? 'Hide Snowfall' : 'Show Snowfall'}
           >
             {showSnowfall ? '❄️' : '☀️'}
           </button>
 
           <button
             onClick={() => setShowRipples(!showRipples)}
-            className="p-2 sm:p-3 rounded-full bg-white dark:bg-gray-800 shadow-lg border border-ink-200 dark:border-gray-700 hover:scale-110 transition-all text-base sm:text-xl"
+            className="p-2.5 bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors text-sm flex items-center justify-center"
             aria-label="Toggle ripples"
-            title={showRipples ? 'Hide ripples' : 'Show ripples'}
+            title={showRipples ? 'Hide Ripple Effect' : 'Show Ripple Effect'}
           >
             {showRipples ? '💧' : '🚫'}
           </button>

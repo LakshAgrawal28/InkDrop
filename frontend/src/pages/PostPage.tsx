@@ -18,6 +18,26 @@ export default function PostPage() {
   const [fontFamily, setFontFamily] = useState<'serif' | 'sans'>('serif');
   const [fontSize, setFontSize] = useState<'sm' | 'base' | 'lg' | 'xl'>('lg');
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [contentWidth, setContentWidth] = useState<'narrow' | 'wide' | 'full'>(() => {
+    const saved = localStorage.getItem('inkdrop-content-width');
+    return (saved as 'narrow' | 'wide' | 'full') || 'narrow';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('inkdrop-content-width', contentWidth);
+  }, [contentWidth]);
+
+  const getWidthClass = () => {
+    switch (contentWidth) {
+      case 'wide':
+        return 'max-w-5xl';
+      case 'full':
+        return 'max-w-full lg:px-12';
+      case 'narrow':
+      default:
+        return 'max-w-3xl';
+    }
+  };
 
   useEffect(() => {
     if (slug) {
@@ -55,15 +75,26 @@ export default function PostPage() {
 
   const isAuthor = user && post && user.id === post.author_id;
 
+  // skeleton Loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900 transition-colors">
-        <div className="flex flex-col items-center justify-center gap-3">
-          <svg className="animate-spin h-8 w-8 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
-          <span className="text-gray-500 dark:text-gray-400 text-sm font-medium">Loading post...</span>
+      <div className="min-h-screen bg-neutral-50 dark:bg-[#0b0c10] text-black dark:text-white transition-colors">
+        <div className={`${getWidthClass()} mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 transition-all duration-300 ease-in-out`}>
+          <div className="space-y-6">
+            <div className="h-64 sm:h-96 w-full bg-neutral-200 dark:bg-neutral-800 skeleton-shimmer"></div>
+            <div className="h-10 w-3/4 bg-neutral-200 dark:bg-neutral-800 skeleton-shimmer"></div>
+            <div className="flex items-center space-x-4 py-4 border-y border-neutral-200 dark:border-neutral-800">
+              <div className="w-10 h-10 rounded-full bg-neutral-200 dark:bg-neutral-800 skeleton-shimmer"></div>
+              <div className="h-4 w-32 bg-neutral-200 dark:bg-neutral-800 skeleton-shimmer"></div>
+            </div>
+            <div className="space-y-3 pt-4">
+              <div className="h-4 w-full bg-neutral-200 dark:bg-neutral-800 skeleton-shimmer"></div>
+              <div className="h-4 w-full bg-neutral-200 dark:bg-neutral-800 skeleton-shimmer"></div>
+              <div className="h-4 w-5/6 bg-neutral-200 dark:bg-neutral-800 skeleton-shimmer"></div>
+              <div className="h-4 w-full bg-neutral-200 dark:bg-neutral-800 skeleton-shimmer"></div>
+              <div className="h-4 w-2/3 bg-neutral-200 dark:bg-neutral-800 skeleton-shimmer"></div>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -71,13 +102,13 @@ export default function PostPage() {
 
   if (error || !post) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900 transition-colors">
-        <div className="text-center p-6">
-          <h1 className="text-4xl font-serif font-bold text-gray-900 dark:text-white mb-4">
+      <div className="min-h-screen flex items-center justify-center bg-neutral-50 dark:bg-[#0b0c10] text-black dark:text-white transition-colors">
+        <div className="text-center p-6 max-w-md border border-neutral-200 dark:border-neutral-800 bg-white/50 dark:bg-black/35 backdrop-blur-md p-8">
+          <h1 className="text-2xl font-serif font-bold text-neutral-900 dark:text-white mb-4">
             {error || 'Post not found'}
           </h1>
-          <Link to="/" className="text-indigo-600 dark:text-indigo-400 hover:underline font-medium">
-            ← Back to home
+          <Link to="/" className="btn btn-secondary text-xs inline-block">
+            ← BACK TO HOME
           </Link>
         </div>
       </div>
@@ -85,72 +116,92 @@ export default function PostPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors relative">
+    <div className="min-h-screen bg-neutral-50 dark:bg-[#0b0c10] text-black dark:text-white transition-colors relative">
       
-      {/* Floating Reader Settings Panel */}
-      <div className="fixed bottom-6 right-6 z-20 md:bottom-auto md:top-24 md:right-8 lg:right-16 xl:right-24">
+      {/* Floating Reader Settings Panel (Minimalist design) */}
+      <div className="fixed bottom-6 right-6 z-20 md:bottom-auto md:top-24 md:right-8 lg:right-16">
         <div className="relative">
           <button
             type="button"
-            className="p-3 rounded-full bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 flex items-center justify-center focus:outline-none"
+            className="group w-14 h-14 sm:w-16 sm:h-16 bg-white/95 dark:bg-black/95 text-black dark:text-white border border-neutral-200 dark:border-neutral-800 rounded-full shadow-lg hover:shadow-xl hover:bg-neutral-50 dark:hover:bg-neutral-900 hover:border-black dark:hover:border-white transition-all duration-300 flex items-center justify-center focus:outline-none backdrop-blur-md"
             onClick={() => setIsSettingsOpen(!isSettingsOpen)}
             title="Reading Preferences"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            <svg className="w-6 h-6 sm:w-7 sm:h-7 group-hover:rotate-90 transition-transform duration-500 ease-out text-neutral-600 dark:text-neutral-300 group-hover:text-black dark:group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.75" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
             </svg>
           </button>
           
           {isSettingsOpen && (
-            <div className="absolute right-0 bottom-14 md:bottom-auto md:top-12 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 shadow-xl w-60 z-30 animate-fade-in transition-all">
-              <h4 className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3">Reader Preferences</h4>
+            <div className="absolute right-0 bottom-18 md:bottom-auto md:top-18 bg-white dark:bg-[#121212] border border-neutral-200 dark:border-neutral-800 p-5 shadow-xl w-72 z-30 transition-all font-sans">
+              <h4 className="text-[10px] font-extrabold text-neutral-400 dark:text-neutral-500 uppercase tracking-widest mb-4">TYPOGRAPHY SETTINGS</h4>
               
               {/* Font Family Selector */}
               <div className="mb-4">
-                <span className="text-xs text-gray-500 dark:text-gray-400 block mb-2 font-medium">Font Style</span>
+                <span className="text-[10px] uppercase tracking-wider text-neutral-500 dark:text-neutral-400 block mb-2 font-bold">Typeface</span>
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     type="button"
                     onClick={() => setFontFamily('serif')}
-                    className={`px-3 py-1.5 text-xs font-serif font-bold rounded-lg border transition-all ${
+                    className={`py-2.5 px-3.5 text-xs sm:text-sm font-serif border transition-all ${
                       fontFamily === 'serif'
-                        ? 'bg-indigo-50 dark:bg-indigo-950/40 border-indigo-500 text-indigo-700 dark:text-indigo-300 font-bold'
-                        : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 text-gray-700 dark:text-gray-300'
+                        ? 'border-black dark:border-white bg-black dark:bg-white text-white dark:text-black font-semibold'
+                        : 'border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-900 text-neutral-600 dark:text-neutral-400'
                     }`}
                   >
-                    Classic Serif
+                    Lora Serif
                   </button>
                   <button
                     type="button"
                     onClick={() => setFontFamily('sans')}
-                    className={`px-3 py-1.5 text-xs font-sans font-bold rounded-lg border transition-all ${
+                    className={`py-2.5 px-3.5 text-xs sm:text-sm font-sans border transition-all ${
                       fontFamily === 'sans'
-                        ? 'bg-indigo-50 dark:bg-indigo-950/40 border-indigo-500 text-indigo-700 dark:text-indigo-300 font-bold'
-                        : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 text-gray-700 dark:text-gray-300'
+                        ? 'border-black dark:border-white bg-black dark:bg-white text-white dark:text-black font-semibold'
+                        : 'border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-900 text-neutral-600 dark:text-neutral-400'
                     }`}
                   >
-                    Clean Sans
+                    Outfit Sans
                   </button>
                 </div>
               </div>
 
               {/* Font Size Selector */}
-              <div>
-                <span className="text-xs text-gray-500 dark:text-gray-400 block mb-2 font-medium">Text Size</span>
-                <div className="flex items-center justify-between gap-1 bg-gray-50 dark:bg-gray-900 p-1 rounded-lg">
+              <div className="mb-4">
+                <span className="text-[10px] uppercase tracking-wider text-neutral-500 dark:text-neutral-400 block mb-2 font-bold">Text Scale</span>
+                <div className="flex items-center justify-between gap-1 border border-neutral-200 dark:border-neutral-800 p-0.5">
                   {(['sm', 'base', 'lg', 'xl'] as const).map((size) => (
                     <button
                       key={size}
                       type="button"
                       onClick={() => setFontSize(size)}
-                      className={`px-2.5 py-1 text-xs rounded transition-all font-semibold uppercase ${
+                      className={`flex-1 py-2.5 text-xs sm:text-sm transition-all font-semibold uppercase ${
                         fontSize === size
-                          ? 'bg-white dark:bg-gray-700 text-indigo-600 dark:text-indigo-400 shadow-sm'
-                          : 'text-gray-500 hover:text-gray-800 dark:hover:text-gray-200'
+                          ? 'bg-black dark:bg-white text-white dark:text-black'
+                          : 'text-neutral-400 hover:text-black dark:hover:text-white'
                       }`}
                     >
-                      {size === 'base' ? 'A' : size === 'sm' ? 'a' : size === 'lg' ? 'A+' : 'A++'}
+                      {size === 'sm' ? 'XS' : size === 'base' ? 'S' : size === 'lg' ? 'M' : 'L'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Page Width Selector */}
+              <div>
+                <span className="text-[10px] uppercase tracking-wider text-neutral-500 dark:text-neutral-400 block mb-2 font-bold">Page Width</span>
+                <div className="grid grid-cols-3 gap-1 border border-neutral-200 dark:border-neutral-800 p-0.5">
+                  {(['narrow', 'wide', 'full'] as const).map((w) => (
+                    <button
+                      key={w}
+                      type="button"
+                      onClick={() => setContentWidth(w)}
+                      className={`py-2.5 text-xs transition-all font-semibold uppercase border ${
+                        contentWidth === w
+                          ? 'border-black dark:border-white bg-black dark:bg-white text-white dark:text-black'
+                          : 'border-transparent hover:bg-neutral-50 dark:hover:bg-neutral-900 text-neutral-500 dark:text-neutral-400'
+                      }`}
+                    >
+                      {w === 'narrow' ? 'Narrow' : w === 'wide' ? 'Wide' : 'Full'}
                     </button>
                   ))}
                 </div>
@@ -160,67 +211,110 @@ export default function PostPage() {
         </div>
       </div>
 
-      <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16 animate-fade-in">
+      <article className={`${getWidthClass()} mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 transition-all duration-300 ease-in-out animate-fade-in`}>
         {/* Post Header */}
         <header className="mb-10">
           {post.cover_image_url && (
-            <img
-              src={post.cover_image_url}
-              alt={post.title}
-              className="w-full h-64 sm:h-96 object-cover rounded-2xl mb-8 shadow-sm animate-scale-in"
-            />
+            <div className="overflow-hidden border border-neutral-200 dark:border-neutral-800 mb-8 max-h-[480px]">
+              <img
+                src={post.cover_image_url}
+                alt={post.title}
+                className="w-full h-full object-cover animate-scale-in"
+              />
+            </div>
           )}
           
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 leading-tight">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-neutral-900 dark:text-white mb-6 leading-tight">
             {post.title}
           </h1>
           
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4 border-b border-gray-100 dark:border-gray-800/80 pb-6">
-            <div className="flex items-center space-x-4 text-gray-600 dark:text-gray-400">
-              <div className="flex items-center space-x-2.5">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 border-b border-neutral-200 dark:border-neutral-800 pb-6 font-sans">
+            <div className="flex items-center space-x-3 text-neutral-500 dark:text-neutral-400 text-xs uppercase tracking-wider flex-wrap gap-y-2">
+              <div className="flex items-center space-x-2">
                 {post.author.avatar_url && (
                   <img
                     src={post.author.avatar_url}
                     alt={post.author.username}
-                    className="w-10 h-10 rounded-full border border-gray-200 dark:border-gray-800"
+                    className="w-8 h-8 rounded-full border border-neutral-200 dark:border-neutral-800"
                   />
                 )}
-                <span className="font-semibold text-gray-900 dark:text-white">
+                <span className="font-bold text-neutral-900 dark:text-white">
                   {post.author.username}
                 </span>
               </div>
               
-              <span className="text-gray-300 dark:text-gray-700">·</span>
+              <span className="text-neutral-300 dark:text-neutral-800">|</span>
               
-              <time className="text-sm font-medium">
+              <time className="font-medium">
                 {new Date(post.published_at!).toLocaleDateString('en-US', {
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric',
                 })}
               </time>
+
+              <span className="text-neutral-300 dark:text-neutral-800">|</span>
+
+              <div className="flex items-center space-x-1.5">
+                <span className="text-[11px] tracking-widest text-neutral-450 dark:text-neutral-500 uppercase font-sans font-bold mr-1.5">
+                  WIDTH:
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (contentWidth === 'full') setContentWidth('wide');
+                    else if (contentWidth === 'wide') setContentWidth('narrow');
+                  }}
+                  disabled={contentWidth === 'narrow'}
+                  className="p-2 text-neutral-400 hover:text-black dark:hover:text-white disabled:opacity-20 disabled:cursor-not-allowed hover:bg-neutral-100 dark:hover:bg-neutral-900/50 transition-all duration-200 focus:outline-none"
+                  title="Decrease Page Width"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+                
+                <span className="text-[10px] tracking-wider font-sans font-bold text-neutral-800 dark:text-neutral-200 uppercase select-none min-w-[60px] text-center">
+                  {contentWidth}
+                </span>
+                
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (contentWidth === 'narrow') setContentWidth('wide');
+                    else if (contentWidth === 'wide') setContentWidth('full');
+                  }}
+                  disabled={contentWidth === 'full'}
+                  className="p-2 text-neutral-400 hover:text-black dark:hover:text-white disabled:opacity-20 disabled:cursor-not-allowed hover:bg-neutral-100 dark:hover:bg-neutral-900/50 transition-all duration-200 focus:outline-none"
+                  title="Increase Page Width"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </div>
             </div>
 
             {isAuthor && (
-              <div className="flex items-center gap-2 sm:space-x-2 animate-slide-in-right">
+              <div className="flex items-center gap-2">
                 <Link
                   to={`/editor?edit=${post.slug}`}
-                  className="btn btn-secondary text-sm flex-1 sm:flex-none text-center"
+                  className="btn btn-secondary text-xs py-2.5 px-5 flex-1 sm:flex-none text-center tracking-wider font-semibold"
                 >
-                  Edit
+                  EDIT POST
                 </Link>
                 <button
                   onClick={handleDelete}
-                  className="btn btn-ghost text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20 flex-1 sm:flex-none"
+                  className="btn bg-red-600/10 hover:bg-red-600 text-red-600 hover:text-white border border-red-600/20 hover:border-red-600 text-xs py-2.5 px-5 flex-1 sm:flex-none transition-colors duration-300 tracking-wider font-semibold"
                 >
-                  Delete
+                  DELETE
                 </button>
               </div>
             )}
           </div>
 
           {deleteError && (
-            <div className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg mb-4 text-sm">
+            <div className="border border-red-500/20 bg-red-500/5 text-red-600 dark:text-red-400 px-4 py-3 text-xs tracking-wider font-sans mb-4">
               {deleteError}
             </div>
           )}
@@ -228,39 +322,60 @@ export default function PostPage() {
 
         {/* Post Content */}
         <div
-          className={`prose dark:prose-invert max-w-none ${
+          className={`prose dark:prose-invert max-w-none text-neutral-800 dark:text-neutral-200 leading-relaxed ${
             fontFamily === 'serif' ? 'font-serif' : 'font-sans'
           } ${
             fontSize === 'sm'
-              ? 'prose-sm'
+              ? 'text-sm sm:text-base prose-sm'
               : fontSize === 'base'
-              ? 'prose-base'
+              ? 'text-base sm:text-lg prose-base'
               : fontSize === 'lg'
-              ? 'prose-lg'
-              : 'prose-xl'
+              ? 'text-lg sm:text-xl prose-lg'
+              : 'text-xl sm:text-2xl prose-xl'
           }`}
         >
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+          <ReactMarkdown 
+            remarkPlugins={[remarkGfm]}
+            components={{
+              h2: ({ node, ...props }) => <h2 className="font-sans font-bold tracking-tight text-neutral-900 dark:text-white mt-10 mb-4" {...props} />,
+              h3: ({ node, ...props }) => <h3 className="font-sans font-semibold tracking-tight text-neutral-900 dark:text-white mt-8 mb-3" {...props} />,
+              p: ({ node, ...props }) => <p className="mb-6" {...props} />,
+              blockquote: ({ node, ...props }) => (
+                <blockquote className="border-l-2 border-black dark:border-white pl-4 italic my-6 text-neutral-600 dark:text-neutral-400 bg-neutral-100/50 dark:bg-neutral-900/30 py-1 pr-2" {...props} />
+              ),
+              pre: ({ node, ...props }) => (
+                <pre className="bg-neutral-900 text-neutral-100 p-4 overflow-x-auto border border-neutral-800 font-mono text-[0.875em] leading-normal my-6" {...props} />
+              ),
+              code: ({ node, inline, ...props }: any) => (
+                inline 
+                  ? <code className="bg-neutral-100 dark:bg-neutral-900 text-neutral-950 dark:text-neutral-50 px-1.5 py-0.5 font-mono text-[0.875em]" {...props} />
+                  : <code className="font-mono text-[0.875em] block" {...props} />
+              ),
+              a: ({ node, ...props }) => (
+                <a className="text-black dark:text-white underline underline-offset-4 decoration-1 hover:decoration-2 font-medium" {...props} />
+              ),
+            }}
+          >
             {post.content}
           </ReactMarkdown>
         </div>
 
-        {/* Author Bio */}
+        {/* Author Bio Section */}
         {post.author.bio && (
-          <div className="mt-16 pt-8 border-t border-gray-100 dark:border-gray-800">
+          <div className="mt-16 pt-8 border-t border-neutral-200 dark:border-neutral-800 font-sans">
             <div className="flex items-start space-x-4">
               {post.author.avatar_url && (
                 <img
                   src={post.author.avatar_url}
                   alt={post.author.username}
-                  className="w-16 h-16 rounded-full border border-gray-200 dark:border-gray-800 shadow-sm"
+                  className="w-12 h-12 rounded-full border border-neutral-200 dark:border-neutral-800"
                 />
               )}
               <div>
-                <h3 className="text-xl font-serif font-bold text-gray-900 dark:text-white mb-2">
-                  About {post.author.username}
+                <h3 className="text-xs uppercase tracking-widest font-extrabold text-neutral-900 dark:text-white mb-2">
+                  ABOUT {post.author.username.toUpperCase()}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                <p className="text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed font-serif italic">
                   {post.author.bio}
                 </p>
               </div>
@@ -268,10 +383,10 @@ export default function PostPage() {
           </div>
         )}
 
-        {/* Back to Home */}
-        <div className="mt-16 text-center">
-          <Link to="/" className="text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors font-medium">
-            ← Back to all posts
+        {/* Back to Archive */}
+        <div className="mt-16 text-center pt-8 border-t border-neutral-100 dark:border-neutral-900 font-sans">
+          <Link to="/" className="text-xs tracking-widest font-semibold uppercase text-neutral-400 hover:text-black dark:hover:text-white transition-colors duration-200">
+            ← BACK TO ARCHIVE
           </Link>
         </div>
       </article>

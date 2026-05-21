@@ -2,13 +2,32 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { postService, PostWithAuthor } from '../services/postService';
 import ScrollReveal from '../components/ScrollReveal';
-import TiltCard from '../components/TiltCard';
 import Typewriter from '../components/Typewriter';
 
 export default function HomePage() {
   const [posts, setPosts] = useState<PostWithAuthor[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  const [contentWidth, setContentWidth] = useState<'narrow' | 'standard' | 'full'>(() => {
+    const saved = localStorage.getItem('inkdrop-home-width');
+    return (saved as 'narrow' | 'standard' | 'full') || 'standard';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('inkdrop-home-width', contentWidth);
+  }, [contentWidth]);
+
+  const getWidthClass = () => {
+    switch (contentWidth) {
+      case 'narrow':
+        return 'max-w-4xl';
+      case 'full':
+        return 'max-w-full lg:px-12';
+      case 'standard':
+      default:
+        return 'max-w-6xl';
+    }
+  };
 
   useEffect(() => {
     loadPosts();
@@ -19,7 +38,7 @@ export default function HomePage() {
       const data = await postService.getPublishedPosts(20, 0);
       setPosts(data);
     } catch (err: any) {
-      setError('Failed to load posts');
+      setError('Failed to load published posts');
       console.error(err);
     } finally {
       setIsLoading(false);
@@ -30,182 +49,277 @@ export default function HomePage() {
     const wordsPerMinute = 200;
     const words = content.trim().split(/\s+/).length;
     const minutes = Math.ceil(words / wordsPerMinute);
-    return `${minutes} min read`;
+    return `${minutes} MIN READ`;
   };
 
+  // Skeleton Loader for Swiss Editorial Theme
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900 transition-colors">
-        <div className="flex flex-col items-center justify-center gap-3">
-          <svg className="animate-spin h-8 w-8 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
-          <span className="text-gray-500 dark:text-gray-400 text-sm font-medium">Loading posts...</span>
+      <div className="min-h-screen bg-neutral-50 dark:bg-[#0b0c10] text-black dark:text-white transition-colors">
+        <div className={`${getWidthClass()} mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 transition-all duration-300 ease-in-out`}>
+          {/* Header Skeleton */}
+          <div className="text-center mb-16">
+            <div className="h-10 w-48 bg-neutral-200 dark:bg-neutral-800 skeleton-shimmer mx-auto mb-4"></div>
+            <div className="h-4 w-64 bg-neutral-200 dark:bg-neutral-800 skeleton-shimmer mx-auto"></div>
+          </div>
+
+          {/* Featured Post Skeleton */}
+          <div className="lg:grid lg:grid-cols-12 lg:gap-12 pb-12 mb-12 border-b border-neutral-200 dark:border-neutral-800">
+            <div className="lg:col-span-7 h-80 sm:h-[400px] bg-neutral-200 dark:bg-neutral-800 skeleton-shimmer mb-6 lg:mb-0"></div>
+            <div className="lg:col-span-5 flex flex-col justify-between py-2">
+              <div className="space-y-4">
+                <div className="h-4 w-24 bg-neutral-200 dark:bg-neutral-800 skeleton-shimmer"></div>
+                <div className="h-8 w-full bg-neutral-200 dark:bg-neutral-800 skeleton-shimmer"></div>
+                <div className="h-8 w-3/4 bg-neutral-200 dark:bg-neutral-800 skeleton-shimmer"></div>
+                <div className="space-y-2 pt-2">
+                  <div className="h-3 w-full bg-neutral-200 dark:bg-neutral-800 skeleton-shimmer"></div>
+                  <div className="h-3 w-full bg-neutral-200 dark:bg-neutral-800 skeleton-shimmer"></div>
+                  <div className="h-3 w-2/3 bg-neutral-200 dark:bg-neutral-800 skeleton-shimmer"></div>
+                </div>
+              </div>
+              <div className="h-10 w-40 bg-neutral-200 dark:bg-neutral-800 skeleton-shimmer mt-6"></div>
+            </div>
+          </div>
+
+          {/* Grid Skeleton */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
+            {[1, 2, 3].map((n) => (
+              <div key={n} className="flex flex-col space-y-4">
+                <div className="h-48 bg-neutral-200 dark:bg-neutral-800 skeleton-shimmer"></div>
+                <div className="h-4 w-20 bg-neutral-200 dark:bg-neutral-800 skeleton-shimmer"></div>
+                <div className="h-6 w-5/6 bg-neutral-200 dark:bg-neutral-800 skeleton-shimmer"></div>
+                <div className="space-y-2">
+                  <div className="h-3 w-full bg-neutral-200 dark:bg-neutral-800 skeleton-shimmer"></div>
+                  <div className="h-3 w-4/5 bg-neutral-200 dark:bg-neutral-800 skeleton-shimmer"></div>
+                </div>
+                <div className="h-4 w-32 bg-neutral-200 dark:bg-neutral-800 skeleton-shimmer pt-2"></div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
-        {/* Hero */}
-        <div className="text-center mb-12 sm:mb-16 animate-fade-in">
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">
-            <Typewriter text="InkDrop" speed={100} />
+    <div className="min-h-screen bg-neutral-50 dark:bg-[#0b0c10] text-black dark:text-white transition-colors">
+      <div className={`${getWidthClass()} mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 transition-all duration-300 ease-in-out`}>
+        
+        {/* Editorial Brand Masthead */}
+        <div className="text-center mb-16 sm:mb-20">
+          <span className="text-[10px] tracking-[0.25em] uppercase font-bold text-neutral-400 dark:text-neutral-500 block mb-3 font-sans">
+            THE ARCHIVE
+          </span>
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-sans tracking-[0.15em] uppercase font-extrabold text-neutral-900 dark:text-white mb-4">
+            <Typewriter text="INKDROP" speed={80} />
           </h1>
-          <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-400 animate-slide-in-right font-medium">
-            A calm space for expressive writing
+          <p className="text-sm font-serif italic text-neutral-500 dark:text-neutral-400 max-w-md mx-auto">
+            A quiet space dedicated to pure expression, curated stories, and minimal design.
           </p>
+          <div className="w-12 h-[1px] bg-neutral-300 dark:bg-neutral-800 mx-auto mt-6"></div>
+          
+          {/* Arrow Viewport Width Adjuster */}
+          <div className="flex items-center justify-center space-x-2.5 mt-5">
+            <button
+              type="button"
+              onClick={() => {
+                if (contentWidth === 'full') setContentWidth('standard');
+                else if (contentWidth === 'standard') setContentWidth('narrow');
+              }}
+              disabled={contentWidth === 'narrow'}
+              className="p-1.5 text-neutral-400 hover:text-black dark:hover:text-white disabled:opacity-20 disabled:cursor-not-allowed transition-all duration-200 focus:outline-none"
+              title="Decrease Viewport Width"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            
+            <span className="text-[9px] tracking-[0.2em] font-sans font-bold text-neutral-400 dark:text-neutral-500 uppercase select-none min-w-[100px]">
+              {contentWidth} WIDTH
+            </span>
+            
+            <button
+              type="button"
+              onClick={() => {
+                if (contentWidth === 'narrow') setContentWidth('standard');
+                else if (contentWidth === 'standard') setContentWidth('full');
+              }}
+              disabled={contentWidth === 'full'}
+              className="p-1.5 text-neutral-400 hover:text-black dark:hover:text-white disabled:opacity-20 disabled:cursor-not-allowed transition-all duration-200 focus:outline-none"
+              title="Increase Viewport Width"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
         </div>
 
         {error && (
-          <div className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900 text-red-700 dark:text-red-400 px-4 py-3 rounded-xl mb-8 max-w-xl mx-auto">
+          <div className="border border-red-500/20 bg-red-500/5 text-red-600 dark:text-red-400 px-4 py-3 text-sm font-sans tracking-wide mb-12 max-w-xl mx-auto text-center">
             {error}
           </div>
         )}
 
         {posts.length === 0 ? (
-          <div className="text-center py-16">
-            <p className="text-gray-500 dark:text-gray-400 text-lg">
-              No posts yet. Be the first to write!
+          <div className="text-center py-20 border border-dashed border-neutral-200 dark:border-neutral-800">
+            <p className="text-neutral-500 dark:text-neutral-400 font-serif italic mb-6">
+              The archive is currently empty.
             </p>
+            <Link to="/editor" className="btn btn-primary text-xs">
+              CREATE FIRST POST
+            </Link>
           </div>
         ) : (
           <div>
-            {/* Featured Post */}
+            {/* Featured Post (Editorial Presentation) */}
             {posts.length > 0 && (
               <ScrollReveal direction="up" delay={0.05}>
-                <Link to={`/post/${posts[0].slug}`} className="group block mb-12">
-                  <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-gray-50/80 to-white/80 dark:from-gray-900/60 dark:to-gray-800/40 backdrop-blur-md border border-gray-200/50 dark:border-gray-800/60 p-6 sm:p-8 shadow-xl hover:shadow-2xl transition-all duration-300 md:grid md:grid-cols-12 md:gap-8 items-center">
+                <Link to={`/post/${posts[0].slug}`} className="group block mb-16 lg:mb-20">
+                  <div className="lg:grid lg:grid-cols-12 lg:gap-12 pb-12 lg:pb-16 border-b border-neutral-200 dark:border-neutral-800/80 items-center">
                     
-                    {/* Card Image */}
-                    {posts[0].cover_image_url ? (
-                      <div className="md:col-span-6 rounded-2xl overflow-hidden h-64 md:h-80 shadow-md">
-                        <img
-                          src={posts[0].cover_image_url}
-                          alt={posts[0].title}
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        />
-                      </div>
-                    ) : (
-                      <div className="md:col-span-6 rounded-2xl overflow-hidden h-64 md:h-80 bg-gradient-to-br from-purple-100 to-indigo-100 dark:from-purple-950/30 dark:to-indigo-950/30 flex items-center justify-center shadow-inner">
-                        <span className="text-indigo-400 dark:text-indigo-600 font-serif font-bold text-4xl">InkDrop</span>
-                      </div>
-                    )}
-
-                    {/* Card Content */}
-                    <div className="md:col-span-6 mt-6 md:mt-0 flex flex-col justify-between h-full py-2">
-                      <div>
-                        <div className="flex items-center gap-2.5 mb-3">
-                          <span className="bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
-                            Featured
+                    {/* Cover Image - Crisp Sharp Corners */}
+                    <div className="lg:col-span-7 mb-6 lg:mb-0 overflow-hidden border border-neutral-200 dark:border-neutral-800">
+                      {posts[0].cover_image_url ? (
+                        <div className="aspect-[16/10] overflow-hidden bg-neutral-100 dark:bg-neutral-900">
+                          <img
+                            src={posts[0].cover_image_url}
+                            alt={posts[0].title}
+                            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-102"
+                          />
+                        </div>
+                      ) : (
+                        <div className="aspect-[16/10] bg-neutral-100 dark:bg-neutral-900/50 flex items-center justify-center">
+                          <span className="text-neutral-300 dark:text-neutral-800 font-sans tracking-[0.2em] font-extrabold text-2xl uppercase">
+                            NO COVER
                           </span>
-                          <span className="text-xs font-semibold text-gray-500 dark:text-gray-400">
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Meta and Content */}
+                    <div className="lg:col-span-5 flex flex-col justify-between py-2">
+                      <div>
+                        <div className="flex items-center gap-3 mb-4">
+                          <span className="text-[10px] tracking-widest uppercase font-extrabold text-black dark:text-white px-2 py-0.5 border border-black dark:border-white">
+                            FEATURED
+                          </span>
+                          <span className="text-[10px] tracking-widest font-semibold text-neutral-400 dark:text-neutral-500 font-sans">
                             {getReadingTime(posts[0].content)}
                           </span>
                         </div>
-                        <h2 className="text-2xl sm:text-3xl font-serif font-bold text-gray-900 dark:text-white mb-3 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors leading-tight">
+                        
+                        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-semibold text-neutral-900 dark:text-white mb-4 group-hover:underline underline-offset-4 decoration-1 decoration-neutral-400 transition-all leading-tight">
                           {posts[0].title}
                         </h2>
+                        
                         {posts[0].excerpt && (
-                          <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base leading-relaxed line-clamp-3 mb-4">
+                          <p className="text-neutral-600 dark:text-neutral-400 text-sm leading-relaxed font-serif line-clamp-3 mb-6">
                             {posts[0].excerpt}
                           </p>
                         )}
                       </div>
                       
-                      <div className="flex items-center gap-3 mt-4 md:mt-0">
+                      <div className="flex items-center gap-3 pt-4 border-t border-neutral-100 dark:border-neutral-900">
                         {posts[0].author.avatar_url && (
                           <img
                             src={posts[0].author.avatar_url}
                             alt={posts[0].author.username}
-                            className="w-8 h-8 rounded-full"
+                            className="w-6 h-6 rounded-full border border-neutral-200 dark:border-neutral-800"
                           />
                         )}
-                        <div className="text-xs sm:text-sm">
-                          <span className="font-semibold text-gray-800 dark:text-gray-200">
+                        <div className="text-[11px] tracking-wider text-neutral-500 dark:text-neutral-400 uppercase font-sans">
+                          <span className="font-bold text-neutral-800 dark:text-neutral-200">
                             {posts[0].author.username}
                           </span>
-                          <span className="mx-2 text-gray-400">·</span>
-                          <time className="text-gray-500">
+                          <span className="mx-2">·</span>
+                          <time>
                             {new Date(posts[0].published_at!).toLocaleDateString('en-US', {
                               year: 'numeric',
-                              month: 'long',
+                              month: 'short',
                               day: 'numeric',
                             })}
                           </time>
                         </div>
                       </div>
                     </div>
+
                   </div>
                 </Link>
               </ScrollReveal>
             )}
 
-            {/* Posts Grid */}
+            {/* Grid of Postings */}
             {posts.length > 1 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
                 {posts.slice(1).map((post, index) => (
                   <ScrollReveal key={post.id} direction="up" delay={index * 0.05}>
-                    <Link to={`/post/${post.slug}`} className="group block h-full">
-                      <TiltCard className="bg-white/40 dark:bg-gray-800/10 backdrop-blur-md border border-gray-200/50 dark:border-gray-800/60 rounded-2xl p-5 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 flex flex-col justify-between h-full transform-gpu cursor-pointer overflow-hidden">
-                        <div className="flex flex-col">
+                    <Link to={`/post/${post.slug}`} className="group flex flex-col h-full justify-between">
+                      <div className="flex flex-col">
+                        
+                        {/* Cover Card */}
+                        <div className="overflow-hidden border border-neutral-200 dark:border-neutral-800 mb-5">
                           {post.cover_image_url ? (
-                            <div className="rounded-xl overflow-hidden h-48 w-full mb-4 shadow-sm">
+                            <div className="aspect-[16/10] overflow-hidden bg-neutral-100 dark:bg-neutral-900">
                               <img
                                 src={post.cover_image_url}
                                 alt={post.title}
-                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-102"
                               />
                             </div>
                           ) : (
-                            <div className="rounded-xl overflow-hidden h-48 w-full bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-950/10 dark:to-purple-950/10 flex items-center justify-center mb-4 border border-gray-100 dark:border-gray-800/50">
-                              <span className="text-indigo-300 dark:text-indigo-950 font-serif font-bold text-2xl">InkDrop</span>
+                            <div className="aspect-[16/10] bg-neutral-100 dark:bg-neutral-900/30 flex items-center justify-center">
+                              <span className="text-neutral-300 dark:text-neutral-800 font-sans tracking-widest text-xs font-bold uppercase">
+                                INKDROP
+                              </span>
                             </div>
                           )}
-
-                          <div className="flex items-center gap-2 mb-2">
-                            <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/30 px-2 py-0.5 rounded">
-                              {getReadingTime(post.content)}
-                            </span>
-                          </div>
-
-                          <h3 className="text-xl font-serif font-bold text-gray-900 dark:text-white mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors leading-tight">
-                            {post.title}
-                          </h3>
-                          
-                          {post.excerpt && (
-                            <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed line-clamp-2 mb-4">
-                              {post.excerpt}
-                            </p>
-                          )}
                         </div>
 
-                        <div className="flex items-center gap-2.5 mt-auto pt-4 border-t border-gray-100 dark:border-gray-800/50">
-                          {post.author.avatar_url && (
-                            <img
-                              src={post.author.avatar_url}
-                              alt={post.author.username}
-                              className="w-7 h-7 rounded-full"
-                            />
-                          )}
-                          <div className="text-xs">
-                            <span className="font-semibold text-gray-800 dark:text-gray-200">
-                              {post.author.username}
-                            </span>
-                            <span className="mx-1.5 text-gray-400">·</span>
-                            <time className="text-gray-500">
-                              {new Date(post.published_at!).toLocaleDateString('en-US', {
-                                year: 'numeric',
-                                month: 'short',
-                                day: 'numeric',
-                              })}
-                            </time>
-                          </div>
+                        {/* Category/Tag */}
+                        <div className="flex items-center gap-2 mb-2.5">
+                          <span className="text-[10px] tracking-widest font-bold text-neutral-400 dark:text-neutral-500 uppercase font-sans">
+                            {getReadingTime(post.content)}
+                          </span>
                         </div>
-                      </TiltCard>
+
+                        {/* Title */}
+                        <h3 className="text-lg sm:text-xl font-serif font-semibold text-neutral-900 dark:text-white mb-3 group-hover:underline underline-offset-4 decoration-1 decoration-neutral-400 transition-all leading-snug">
+                          {post.title}
+                        </h3>
+                        
+                        {/* Short Excerpt */}
+                        {post.excerpt && (
+                          <p className="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed font-serif line-clamp-2 mb-4">
+                            {post.excerpt}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Footer Metadata */}
+                      <div className="flex items-center gap-2.5 pt-4 mt-auto border-t border-neutral-100 dark:border-neutral-900">
+                        {post.author.avatar_url && (
+                          <img
+                            src={post.author.avatar_url}
+                            alt={post.author.username}
+                            className="w-5 h-5 rounded-full border border-neutral-200 dark:border-neutral-800"
+                          />
+                        )}
+                        <div className="text-[10px] tracking-wider text-neutral-400 dark:text-neutral-500 uppercase font-sans">
+                          <span className="font-bold text-neutral-800 dark:text-neutral-200">
+                            {post.author.username}
+                          </span>
+                          <span className="mx-1.5">·</span>
+                          <time>
+                            {new Date(post.published_at!).toLocaleDateString('en-US', {
+                              year: 'numeric',
+                              month: 'short',
+                              day: 'numeric',
+                            })}
+                          </time>
+                        </div>
+                      </div>
                     </Link>
                   </ScrollReveal>
                 ))}

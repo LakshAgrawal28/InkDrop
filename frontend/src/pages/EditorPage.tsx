@@ -16,6 +16,54 @@ export default function EditorPage() {
   const [error, setError] = useState('');
   const [viewMode, setViewMode] = useState<'edit' | 'split' | 'preview'>('edit');
   const [isDragging, setIsDragging] = useState(false);
+  const [contentWidth, setContentWidth] = useState<'narrow' | 'standard' | 'full'>(() => {
+    const saved = localStorage.getItem('inkdrop-editor-width');
+    return (saved as 'narrow' | 'standard' | 'full') || 'standard';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('inkdrop-editor-width', contentWidth);
+  }, [contentWidth]);
+
+  const splitRatios = ['30/70', '40/60', '50/50', '60/40', '70/30'] as const;
+  type SplitRatioType = typeof splitRatios[number];
+
+  const [splitRatio, setSplitRatio] = useState<SplitRatioType>(() => {
+    const saved = localStorage.getItem('inkdrop-editor-split-ratio');
+    return (saved as SplitRatioType) || '50/50';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('inkdrop-editor-split-ratio', splitRatio);
+  }, [splitRatio]);
+
+  const getGridTemplateColumns = () => {
+    switch (splitRatio) {
+      case '30/70':
+        return '3fr 7fr';
+      case '40/60':
+        return '4fr 6fr';
+      case '60/40':
+        return '6fr 4fr';
+      case '70/30':
+        return '7fr 3fr';
+      case '50/50':
+      default:
+        return '1fr 1fr';
+    }
+  };
+
+  const getWidthClass = () => {
+    switch (contentWidth) {
+      case 'narrow':
+        return 'max-w-3xl';
+      case 'full':
+        return 'max-w-full lg:px-12';
+      case 'standard':
+      default:
+        return 'max-w-7xl';
+    }
+  };
 
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -63,20 +111,20 @@ export default function EditorPage() {
       }
       setLastSaved(new Date());
     } catch (err: any) {
-      setError('Failed to save');
+      setError('Autosave failed');
       console.error(err);
     } finally {
       setIsSaving(false);
     }
   }, [title, content, postId, coverImageUrl]);
 
-  // Autosave every 3 seconds after changes
+  // Autosave every 4 seconds after changes
   useEffect(() => {
     if (!title.trim() || !content.trim()) return;
 
     const timeoutId = setTimeout(() => {
       savePost();
-    }, 3000);
+    }, 4000);
 
     return () => clearTimeout(timeoutId);
   }, [title, content, savePost]);
@@ -88,7 +136,7 @@ export default function EditorPage() {
       const result = await postService.uploadImage(file);
       setCoverImageUrl(result.imageUrl);
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to upload image. Make sure Cloudinary credentials are set.');
+      setError(err.response?.data?.error || 'Failed to upload cover image.');
       console.error(err);
     } finally {
       setIsUploading(false);
@@ -144,7 +192,7 @@ export default function EditorPage() {
       const result = await postService.uploadImage(file);
       insertMarkdownText(`![ImageDescription](${result.imageUrl})`);
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to upload inline image. Make sure Cloudinary is configured.');
+      setError(err.response?.data?.error || 'Failed to upload inline image.');
       console.error(err);
     } finally {
       setIsUploading(false);
@@ -162,13 +210,13 @@ export default function EditorPage() {
       await postService.publishPost(postId);
       navigate('/');
     } catch (err: any) {
-      setError('Failed to publish');
+      setError('Failed to publish post');
       console.error(err);
     }
   };
 
   const handleDiscard = () => {
-    if (confirm('Discard this draft?')) {
+    if (confirm('Discard changes and return to drafts?')) {
       navigate('/drafts');
     }
   };
@@ -178,134 +226,221 @@ export default function EditorPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors flex flex-col">
-      {/* Editor Header */}
-      <div className="border-b border-gray-200 dark:border-gray-800 sticky top-0 bg-white dark:bg-gray-900 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-            <div className="flex flex-wrap items-center gap-4">
+    <div className="min-h-screen bg-neutral-50 dark:bg-[#0b0c10] text-black dark:text-white transition-colors flex flex-col font-sans">
+      {/* Editor Header Navigation */}
+      <div className="border-b border-neutral-200 dark:border-neutral-800 bg-white/90 dark:bg-[#0b0c10]/95 backdrop-blur-sm sticky top-0 z-20">
+        <div className={`${getWidthClass()} mx-auto px-4 sm:px-6 lg:px-8 py-4 transition-all duration-300 ease-in-out`}>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            
+            {/* Status Panel */}
+            <div className="flex items-center gap-4">
               <button
                 onClick={() => navigate('/drafts')}
-                className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-sm font-medium"
+                className="text-xs uppercase tracking-widest font-bold text-neutral-400 hover:text-black dark:hover:text-white transition-colors"
               >
-                ← Back to drafts
+                ← DRAFTS
               </button>
-              <div className="text-xs text-gray-500 dark:text-gray-500">
-                {isSaving && 'Saving...'}
-                {!isSaving && lastSaved && `Saved ${formatTimeSince(lastSaved)}`}
-                {!isSaving && !lastSaved && 'Unsaved draft'}
+              <span className="text-neutral-300 dark:text-neutral-800">|</span>
+              <div className="text-[10px] tracking-wider uppercase font-bold text-neutral-500">
+                {isSaving ? (
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 bg-neutral-400 dark:bg-neutral-600 rounded-full animate-ping"></span>
+                    SAVING DRAFT...
+                  </span>
+                ) : lastSaved ? (
+                  `SAVED ${formatTimeSince(lastSaved)}`
+                ) : (
+                  'UNSAVED DRAFT'
+                )}
               </div>
             </div>
 
-            {/* View Switcher Toolbar */}
-            <div className="flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded-lg p-1 text-xs font-semibold self-center">
-              <button
-                type="button"
-                onClick={() => setViewMode('edit')}
-                className={`px-3 py-1.5 rounded-md transition-all ${
-                  viewMode === 'edit'
-                    ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
-                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-                }`}
-              >
-                Edit
-              </button>
-              <button
-                type="button"
-                onClick={() => setViewMode('split')}
-                className={`px-3 py-1.5 rounded-md transition-all ${
-                  viewMode === 'split'
-                    ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
-                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-                }`}
-              >
-                Split View
-              </button>
-              <button
-                type="button"
-                onClick={() => setViewMode('preview')}
-                className={`px-3 py-1.5 rounded-md transition-all ${
-                  viewMode === 'preview'
-                    ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
-                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-                }`}
-              >
-                Live Preview
-              </button>
+            {/* View Mode Splitter & Canvas width Segment */}
+            <div className="flex items-center gap-3 self-start md:self-center flex-wrap">
+              <div className="flex border border-neutral-200 dark:border-neutral-800 p-0.5">
+                {(['edit', 'split', 'preview'] as const).map((mode) => (
+                  <button
+                    key={mode}
+                    type="button"
+                    onClick={() => setViewMode(mode)}
+                    className={`px-4 py-2 text-[11px] tracking-widest uppercase font-bold transition-all ${
+                      viewMode === mode
+                        ? 'bg-black dark:bg-white text-white dark:text-black'
+                        : 'text-neutral-500 hover:text-black dark:hover:text-white'
+                    }`}
+                  >
+                    {mode === 'edit' ? 'WRITE' : mode === 'split' ? 'SPLIT' : 'PREVIEW'}
+                  </button>
+                ))}
+              </div>
+
+              <div className="flex items-center space-x-1 border border-neutral-200 dark:border-neutral-800 p-0.5">
+                <span className="text-[11px] tracking-widest text-neutral-450 dark:text-neutral-500 uppercase font-sans font-bold px-2.5">
+                  CANVAS:
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (contentWidth === 'full') setContentWidth('standard');
+                    else if (contentWidth === 'standard') setContentWidth('narrow');
+                  }}
+                  disabled={contentWidth === 'narrow'}
+                  className="p-2 text-neutral-400 hover:text-black dark:hover:text-white disabled:opacity-20 disabled:cursor-not-allowed transition-all duration-200 focus:outline-none"
+                  title="Decrease Canvas Width"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+                
+                <span className="text-[10px] tracking-wider font-sans font-bold text-neutral-800 dark:text-neutral-200 uppercase select-none min-w-[72px] text-center">
+                  {contentWidth}
+                </span>
+                
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (contentWidth === 'narrow') setContentWidth('standard');
+                    else if (contentWidth === 'standard') setContentWidth('full');
+                  }}
+                  disabled={contentWidth === 'full'}
+                  className="p-2 text-neutral-400 hover:text-black dark:hover:text-white disabled:opacity-20 disabled:cursor-not-allowed transition-all duration-200 focus:outline-none"
+                  title="Increase Canvas Width"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </div>
+
+              {viewMode === 'split' && (
+                <div className="flex items-center space-x-1 border border-neutral-200 dark:border-neutral-800 p-0.5">
+                  <span className="text-[11px] tracking-widest text-neutral-450 dark:text-neutral-500 uppercase font-sans font-bold px-2.5">
+                    SPLIT:
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const currentIndex = splitRatios.indexOf(splitRatio);
+                      if (currentIndex > 0) {
+                        setSplitRatio(splitRatios[currentIndex - 1]);
+                      }
+                    }}
+                    disabled={splitRatio === '30/70'}
+                    className="p-2 text-neutral-400 hover:text-black dark:hover:text-white disabled:opacity-20 disabled:cursor-not-allowed transition-all duration-200 focus:outline-none"
+                    title="Shrink Editor (Shift Divider Left)"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </button>
+                  
+                  <span className="text-[10px] tracking-wider font-sans font-bold text-neutral-800 dark:text-neutral-200 uppercase select-none min-w-[60px] text-center">
+                    {splitRatio}
+                  </span>
+                  
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const currentIndex = splitRatios.indexOf(splitRatio);
+                      if (currentIndex < splitRatios.length - 1) {
+                        setSplitRatio(splitRatios[currentIndex + 1]);
+                      }
+                    }}
+                    disabled={splitRatio === '70/30'}
+                    className="p-2 text-neutral-400 hover:text-black dark:hover:text-white disabled:opacity-20 disabled:cursor-not-allowed transition-all duration-200 focus:outline-none"
+                    title="Expand Editor (Shift Divider Right)"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+              )}
             </div>
 
-            <div className="flex items-center space-x-3 w-full md:w-auto">
+            {/* Publish & Discard Actions */}
+            <div className="flex items-center space-x-2.5">
               <button
                 onClick={handleDiscard}
-                className="btn btn-ghost text-sm py-1.5 px-4 flex-1 md:flex-none"
+                className="btn btn-secondary text-xs py-2.5 px-5.5 font-semibold tracking-wider"
               >
-                Discard
+                DISCARD
               </button>
               <button
                 onClick={handlePublish}
-                className="btn btn-primary text-sm py-1.5 px-4 flex-1 md:flex-none"
+                className="btn btn-primary text-xs py-2.5 px-5.5 font-semibold tracking-wider"
                 disabled={!title.trim() || !content.trim()}
               >
-                Publish
+                PUBLISH POST
               </button>
             </div>
           </div>
 
           {error && (
-            <div className="mt-2 text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/20 p-2 rounded border border-red-200 dark:border-red-900">
+            <div className="mt-3 border border-red-500/20 bg-red-500/5 text-red-600 dark:text-red-400 px-4 py-2.5 text-xs font-sans tracking-wide">
               {error}
             </div>
           )}
         </div>
       </div>
 
-      {/* Markdown Toolbar */}
+      {/* Editor Markdown Utility Toolbar */}
       {viewMode !== 'preview' && (
-        <div className="border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50 sticky top-[69px] z-10">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex flex-wrap items-center gap-1">
+        <div className="border-b border-neutral-200 dark:border-neutral-800 bg-neutral-100/50 dark:bg-neutral-900/30 sticky top-[73px] z-10">
+          <div className={`${getWidthClass()} mx-auto px-4 sm:px-6 lg:px-8 py-1.5 flex flex-wrap items-center gap-1 transition-all duration-300 ease-in-out`}>
             <button
               type="button"
               onClick={() => insertMarkdownText('**', '**')}
-              title="Bold"
-              className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 font-bold text-sm w-9 h-9 flex items-center justify-center"
+              title="Bold text"
+              className="px-2 py-1 text-xs hover:bg-neutral-200 dark:hover:bg-neutral-800 text-neutral-700 dark:text-neutral-300 font-bold"
             >
-              B
+              BOLD
             </button>
             <button
               type="button"
               onClick={() => insertMarkdownText('*', '*')}
-              title="Italic"
-              className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 italic text-sm w-9 h-9 flex items-center justify-center"
+              title="Italic text"
+              className="px-2 py-1 text-xs hover:bg-neutral-200 dark:hover:bg-neutral-800 text-neutral-700 dark:text-neutral-300 italic"
             >
-              I
+              ITALIC
             </button>
             <button
               type="button"
               onClick={() => insertMarkdownText('[', '](url)')}
-              title="Add Link"
-              className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium"
+              title="Link"
+              className="px-2 py-1 text-xs hover:bg-neutral-200 dark:hover:bg-neutral-800 text-neutral-700 dark:text-neutral-300"
             >
-              Link
+              LINK
             </button>
             <button
               type="button"
               onClick={() => insertMarkdownText('`', '`')}
-              title="Code Block"
-              className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-mono"
+              title="Code block"
+              className="px-2 py-1 text-xs hover:bg-neutral-200 dark:hover:bg-neutral-800 text-neutral-700 dark:text-neutral-300 font-mono"
             >
-              &lt;/&gt;
+              CODE
             </button>
             <button
               type="button"
               onClick={() => insertMarkdownText('\n- ', '')}
-              title="Bulleted List"
-              className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm"
+              title="List item"
+              className="px-2 py-1 text-xs hover:bg-neutral-200 dark:hover:bg-neutral-800 text-neutral-700 dark:text-neutral-300"
             >
-              • List
+              LIST
             </button>
-            <span className="w-px h-6 bg-gray-200 dark:bg-gray-700 mx-2"></span>
-            <label className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 cursor-pointer flex items-center gap-1.5 text-sm h-9">
-              📷 Upload Image
+            <button
+              type="button"
+              onClick={() => insertMarkdownText('\n> ', '')}
+              title="Quote block"
+              className="px-2 py-1 text-xs hover:bg-neutral-200 dark:hover:bg-neutral-800 text-neutral-700 dark:text-neutral-300 italic"
+            >
+              QUOTE
+            </button>
+            <span className="w-px h-4 bg-neutral-300 dark:bg-neutral-800 mx-2"></span>
+            
+            <label className="px-2 py-1 text-xs hover:bg-neutral-200 dark:hover:bg-neutral-800 text-neutral-700 dark:text-neutral-300 cursor-pointer flex items-center gap-1.5 transition-colors font-medium">
+              <span>📷 UPLOAD IMAGE</span>
               <input
                 type="file"
                 accept="image/*"
@@ -317,44 +452,44 @@ export default function EditorPage() {
         </div>
       )}
 
-      {/* Editor & Preview Workspace */}
-      <div className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className={`h-full ${viewMode === 'split' ? 'grid grid-cols-2 gap-8' : 'block'}`}>
+      <div className={`flex-1 ${getWidthClass()} w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col transition-all duration-300 ease-in-out`}>
+        <div 
+          className={`flex-1 ${viewMode === 'split' ? 'grid gap-8 transition-all duration-300 ease-in-out' : 'flex flex-col'}`}
+          style={viewMode === 'split' ? { gridTemplateColumns: getGridTemplateColumns() } : undefined}
+        >
           
-          {/* Editor Input Panel */}
+          {/* Writing Area */}
           {(viewMode === 'edit' || viewMode === 'split') && (
-            <div className="flex flex-col space-y-6 h-full">
-              {/* Cover Image Upload Card */}
+            <div className="flex flex-col space-y-6 flex-1">
+              
+              {/* Cover Image Upload Area */}
               <div
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
-                className={`relative border-2 border-dashed rounded-xl p-6 text-center transition-all ${
+                className={`relative border border-dashed p-6 text-center transition-colors ${
                   isDragging
-                    ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-900/10'
+                    ? 'border-neutral-900 bg-neutral-100 dark:border-white dark:bg-neutral-900/40'
                     : coverImageUrl
-                    ? 'border-green-300 dark:border-green-800 bg-transparent'
-                    : 'border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 bg-gray-50 dark:bg-gray-900/30'
+                    ? 'border-neutral-200 dark:border-neutral-850 bg-transparent'
+                    : 'border-neutral-300 dark:border-neutral-800 hover:border-neutral-400 dark:hover:border-neutral-700 bg-transparent'
                 }`}
               >
                 {isUploading ? (
-                  <div className="py-8 text-gray-600 dark:text-gray-400 flex flex-col items-center justify-center gap-2">
-                    <svg className="animate-spin h-8 w-8 text-blue-500" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    <span className="text-sm font-medium">Uploading image to Cloudinary...</span>
+                  <div className="py-8 text-neutral-500 flex flex-col items-center justify-center gap-3">
+                    <div className="w-6 h-6 border-2 border-neutral-300 dark:border-neutral-700 border-t-black dark:border-t-white rounded-full animate-spin"></div>
+                    <span className="text-xs uppercase tracking-widest font-bold">Uploading file to Cloudinary...</span>
                   </div>
                 ) : coverImageUrl ? (
-                  <div className="relative group rounded-lg overflow-hidden max-h-72">
+                  <div className="relative group max-h-72 overflow-hidden border border-neutral-200 dark:border-neutral-800">
                     <img
                       src={coverImageUrl}
-                      alt="Cover preview"
-                      className="w-full h-full object-cover rounded-lg max-h-72"
+                      alt="Cover image"
+                      className="w-full h-full object-cover max-h-72"
                     />
-                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
-                      <label className="btn py-1.5 px-3 text-xs bg-white text-gray-900 hover:bg-gray-100 border-none cursor-pointer rounded-md font-medium">
-                        Change Image
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+                      <label className="btn py-1.5 px-3 text-[10px] tracking-wider bg-white text-black hover:bg-neutral-200 cursor-pointer font-bold">
+                        CHANGE COVER
                         <input
                           type="file"
                           accept="image/*"
@@ -368,79 +503,100 @@ export default function EditorPage() {
                       <button
                         type="button"
                         onClick={() => setCoverImageUrl('')}
-                        className="btn py-1.5 px-3 text-xs bg-red-600 hover:bg-red-700 text-white border-none rounded-md font-medium"
+                        className="btn py-1.5 px-3 text-[10px] tracking-wider bg-red-650 text-white hover:bg-red-700 font-bold border-red-650"
                       >
-                        Remove
+                        REMOVE
                       </button>
                     </div>
                   </div>
                 ) : (
-                  <div className="cursor-pointer">
-                    <label className="cursor-pointer block py-4">
-                      <div className="text-gray-400 dark:text-gray-500 mb-3 flex justify-center">
-                        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                        </svg>
-                      </div>
-                      <p className="text-sm font-semibold text-blue-600 dark:text-blue-400 hover:underline">
-                        Upload Cover Image
-                      </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-500 mt-1.5">
-                        Drag and drop, or click to browse (Max 5MB)
-                      </p>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file) handleImageUpload(file);
-                        }}
-                        className="hidden"
-                      />
-                    </label>
-                  </div>
+                  <label className="cursor-pointer block py-6">
+                    <div className="text-neutral-400 dark:text-neutral-600 mb-2 flex justify-center">
+                      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                      </svg>
+                    </div>
+                    <p className="text-xs uppercase tracking-widest font-bold text-black dark:text-white">
+                      ADD COVER IMAGE
+                    </p>
+                    <p className="text-[10px] uppercase tracking-wider text-neutral-400 dark:text-neutral-500 mt-1">
+                      Drag & Drop, or click to select cover (Max 5MB)
+                    </p>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) handleImageUpload(file);
+                      }}
+                      className="hidden"
+                    />
+                  </label>
                 )}
               </div>
 
-              {/* Title Input */}
+              {/* Title Editor */}
               <input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="Post Title..."
-                className="w-full text-3xl sm:text-4xl font-serif font-bold text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-700 focus:outline-none bg-transparent leading-tight border-b border-gray-100 dark:border-gray-800 pb-3"
+                placeholder="Title your draft..."
+                className="w-full text-3xl font-serif font-bold text-neutral-900 dark:text-white placeholder-neutral-300 dark:placeholder-neutral-800 focus:outline-none bg-transparent leading-tight border-b border-neutral-200 dark:border-neutral-800 pb-3"
               />
 
-              {/* Editor Textarea */}
+              {/* Markdown Editor Canvas */}
               <textarea
                 id="editor-textarea"
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                placeholder="Start writing... (Markdown supported)"
-                className="w-full min-h-[500px] flex-1 text-lg text-gray-800 dark:text-gray-300 placeholder-gray-300 dark:placeholder-gray-700 focus:outline-none resize-none font-serif leading-relaxed bg-transparent"
+                placeholder="Begin drafting... (Markdown symbols are supported)"
+                className="w-full min-h-[480px] flex-1 text-base text-neutral-800 dark:text-neutral-300 placeholder-neutral-300 dark:placeholder-neutral-800 focus:outline-none resize-none font-serif leading-relaxed bg-transparent"
               />
             </div>
           )}
 
-          {/* Right Panel: Live Markdown Preview */}
+          {/* Preview Panel */}
           {(viewMode === 'preview' || viewMode === 'split') && (
-            <div className={`prose dark:prose-invert prose-sm sm:prose-base lg:prose-lg max-w-none bg-gray-50/50 dark:bg-gray-900/30 rounded-xl p-6 md:p-8 border border-gray-200 dark:border-gray-800 overflow-y-auto max-h-[calc(100vh-200px)] scrollbar-thin`}>
+            <div className={`prose dark:prose-invert max-w-none bg-white dark:bg-black/30 p-6 md:p-8 border border-neutral-200 dark:border-neutral-800 overflow-y-auto max-h-[calc(100vh-210px)] flex-1`}>
               {coverImageUrl && (
-                <img
-                  src={coverImageUrl}
-                  alt={title || 'Cover image'}
-                  className="w-full h-64 object-cover rounded-xl mb-6 shadow-sm animate-scale-in"
-                />
+                <div className="overflow-hidden border border-neutral-200 dark:border-neutral-800 mb-6 max-h-72">
+                  <img
+                    src={coverImageUrl}
+                    alt={title || 'Cover'}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
               )}
-              <h1 className="font-serif font-bold text-gray-900 dark:text-white leading-tight mb-4 border-b border-gray-100 dark:border-gray-800 pb-3">
+              <h1 className="font-serif font-bold text-neutral-900 dark:text-white leading-tight mb-4 border-b border-neutral-200 dark:border-neutral-800 pb-3">
                 {title || 'Untitled Post'}
               </h1>
               {content ? (
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                <ReactMarkdown 
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    h2: ({ node, ...props }) => <h2 className="font-sans font-bold tracking-tight text-neutral-900 dark:text-white mt-10 mb-4" {...props} />,
+                    h3: ({ node, ...props }) => <h3 className="font-sans font-semibold tracking-tight text-neutral-900 dark:text-white mt-8 mb-3" {...props} />,
+                    p: ({ node, ...props }) => <p className="mb-6 leading-relaxed font-serif" {...props} />,
+                    blockquote: ({ node, ...props }) => (
+                      <blockquote className="border-l-2 border-black dark:border-white pl-4 italic my-6 text-neutral-600 dark:text-neutral-400 bg-neutral-100/50 dark:bg-neutral-900/30 py-1 pr-2" {...props} />
+                    ),
+                    pre: ({ node, ...props }) => (
+                      <pre className="bg-neutral-900 text-neutral-100 p-4 overflow-x-auto border border-neutral-800 font-mono text-[0.875em] leading-normal my-6" {...props} />
+                    ),
+                    code: ({ node, inline, ...props }: any) => (
+                      inline 
+                        ? <code className="bg-neutral-100 dark:bg-neutral-900 text-neutral-950 dark:text-neutral-50 px-1.5 py-0.5 font-mono text-[0.875em]" {...props} />
+                        : <code className="font-mono text-[0.875em] block" {...props} />
+                    ),
+                    a: ({ node, ...props }) => (
+                      <a className="text-black dark:text-white underline underline-offset-4 decoration-1 hover:decoration-2 font-medium" {...props} />
+                    ),
+                  }}
+                >
                   {content}
                 </ReactMarkdown>
               ) : (
-                <p className="text-gray-400 italic">Start writing in the editor to see your live preview here.</p>
+                <p className="text-neutral-400 dark:text-neutral-600 italic font-serif">Compose editor content to preview rendering live.</p>
               )}
             </div>
           )}
@@ -453,9 +609,9 @@ export default function EditorPage() {
 function formatTimeSince(date: Date): string {
   const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
 
-  if (seconds < 60) return 'just now';
-  if (seconds < 120) return '1 minute ago';
-  if (seconds < 3600) return `${Math.floor(seconds / 60)} minutes ago`;
-  if (seconds < 7200) return '1 hour ago';
-  return `${Math.floor(seconds / 3600)} hours ago`;
+  if (seconds < 60) return 'JUST NOW';
+  if (seconds < 120) return '1 MINUTE AGO';
+  if (seconds < 3600) return `${Math.floor(seconds / 60)} MINUTES AGO`;
+  if (seconds < 7200) return '1 HOUR AGO';
+  return `${Math.floor(seconds / 3600)} HOURS AGO`;
 }

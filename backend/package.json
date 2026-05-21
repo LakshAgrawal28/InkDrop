@@ -9,6 +9,7 @@
     "start": "node dist/server.js",
     "vercel-build": "npm run build",
     "db:migrate": "node -r ts-node/register src/db/migrate.ts",
+    "db:seed": "node -r ts-node/register src/db/seed.ts",
     "kill-port": "node kill-port.js"
   },
   "keywords": [

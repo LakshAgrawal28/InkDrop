@@ -29,43 +29,43 @@ export default function RegisterPage() {
   };
 
   return (
-    <AuroraBackground fullHeight className="min-h-screen flex items-center justify-center bg-ink-50 dark:bg-gray-900 px-4 transition-colors">
-      <div className="max-w-md w-full animate-scale-in relative z-10">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-serif font-bold text-ink-900 dark:text-white mb-2">
-            Join InkDrop
+    <AuroraBackground fullHeight className="min-h-screen bg-neutral-50 dark:bg-[#0b0c10] px-4 transition-colors">
+      <div className="max-w-md w-full animate-scale-in relative z-10 py-12">
+        <div className="text-center mb-10">
+          <h1 className="text-3xl font-sans tracking-widest uppercase text-neutral-900 dark:text-white mb-2">
+            JOIN INKDROP
           </h1>
-          <p className="text-ink-600 dark:text-gray-400 font-medium">
-            Start your writing journey today
+          <p className="text-neutral-500 dark:text-neutral-400 font-serif italic text-sm">
+            Begin your creative writing and archiving journey
           </p>
         </div>
 
-        <div className="backdrop-blur-md bg-white/75 dark:bg-gray-800/75 rounded-2xl shadow-xl border border-white/20 dark:border-gray-700/40 p-8 hover-glow">
+        <div className="bg-white/60 dark:bg-black/40 backdrop-blur-md border border-neutral-200/60 dark:border-neutral-800/60 p-8 sm:p-10">
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
-              <div className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-sm">
+              <div className="border border-red-500/20 bg-red-500/5 text-red-600 dark:text-red-400 px-4 py-3 text-sm font-sans tracking-wide">
                 {error}
               </div>
             )}
 
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-ink-700 dark:text-gray-300 mb-2">
-                Email
+            <div className="space-y-1">
+              <label htmlFor="email" className="block text-xs uppercase tracking-widest font-semibold text-neutral-700 dark:text-neutral-300">
+                Email Address
               </label>
               <input
                 id="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="input bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm"
-                placeholder="you@example.com"
+                className="input"
+                placeholder="name@domain.com"
                 required
                 autoFocus
               />
             </div>
 
-            <div>
-              <label htmlFor="username" className="block text-sm font-medium text-ink-700 dark:text-gray-300 mb-2">
+            <div className="space-y-1">
+              <label htmlFor="username" className="block text-xs uppercase tracking-widest font-semibold text-neutral-700 dark:text-neutral-300">
                 Username
               </label>
               <input
@@ -73,21 +73,21 @@ export default function RegisterPage() {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="input bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm"
-                placeholder="yourname"
+                className="input"
+                placeholder="writername"
                 required
                 minLength={3}
                 maxLength={50}
                 pattern="[a-zA-Z0-9_-]+"
                 title="Username can only contain letters, numbers, hyphens, and underscores"
               />
-              <p className="text-xs text-ink-500 dark:text-gray-500 mt-1.5">
-                3-50 characters, letters, numbers, hyphens, and underscores only
+              <p className="text-[10px] uppercase tracking-wider text-neutral-400 dark:text-neutral-500 mt-1">
+                Letters, numbers, hyphens, underscores only (3-50 chars)
               </p>
             </div>
 
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-ink-700 dark:text-gray-300 mb-2">
+            <div className="space-y-1">
+              <label htmlFor="password" className="block text-xs uppercase tracking-widest font-semibold text-neutral-700 dark:text-neutral-300">
                 Password
               </label>
               <input
@@ -95,12 +95,12 @@ export default function RegisterPage() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="input bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm"
+                className="input"
                 placeholder="••••••••"
                 required
                 minLength={8}
               />
-              <p className="text-xs text-ink-500 dark:text-gray-500 mt-1.5">
+              <p className="text-[10px] uppercase tracking-wider text-neutral-400 dark:text-neutral-500 mt-1">
                 At least 8 characters
               </p>
             </div>
@@ -108,17 +108,24 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full btn btn-primary py-2.5 font-semibold text-sm shadow-md"
+              className="w-full btn btn-primary flex items-center justify-center gap-2 mt-4"
             >
-              {isLoading ? 'Creating account...' : 'Create Account'}
+              {isLoading ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-neutral-400 border-t-white dark:border-t-black rounded-full animate-spin"></div>
+                  <span>CREATING PROFILE...</span>
+                </>
+              ) : (
+                'CREATE ACCOUNT'
+              )}
             </button>
           </form>
 
-          <div className="mt-6 text-center">
-            <p className="text-sm text-ink-600 dark:text-gray-400">
-              Already have an account?{' '}
-              <Link to="/login" className="text-ink-900 dark:text-white font-semibold hover:underline">
-                Sign in
+          <div className="mt-8 text-center pt-6 border-t border-neutral-200/50 dark:border-neutral-800/50">
+            <p className="text-xs tracking-wider text-neutral-500 dark:text-neutral-400 uppercase">
+              Already registered?{' '}
+              <Link to="/login" className="text-black dark:text-white font-bold hover:underline underline-offset-4 ml-1">
+                SIGN IN
               </Link>
             </p>
           </div>

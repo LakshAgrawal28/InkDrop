@@ -15,7 +15,7 @@ export default function AuroraBackground({ children, className = '', fullHeight 
         <div className="aurora aurora-2"></div>
         <div className="aurora aurora-3"></div>
       </div>
-      <div className="relative z-10 w-full h-full">
+      <div className="relative z-10 w-full min-h-screen flex flex-col items-center justify-center">
         {children}
       </div>
     </div>
