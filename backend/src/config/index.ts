@@ -18,7 +18,31 @@ export const config = {
   },
   
   cors: {
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origins: (() => {
+      const raw = process.env.FRONTEND_URL;
+      if (raw && raw.trim()) {
+        return raw
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean);
+      }
+
+      // Sensible defaults for local development (Vite + common ports)
+      if ((process.env.NODE_ENV || 'development') !== 'production') {
+        return [
+          'http://localhost:3000',
+          'http://localhost:5173',
+          'http://localhost:4173',
+          'http://127.0.0.1:3000',
+          'http://127.0.0.1:5173',
+          'http://127.0.0.1:4173',
+        ];
+      }
+
+      // If FRONTEND_URL isn't set in production, allow all origins to avoid
+      // surprising breakage. Prefer setting FRONTEND_URL explicitly.
+      return ['*'];
+    })(),
   },
   cloudinary: {
     cloudName: process.env.CLOUDINARY_CLOUD_NAME || '',

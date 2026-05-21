@@ -10,9 +10,26 @@ import { pool } from './db';
 const app = express();
 
 // Middleware
-app.use(cors({ origin: config.cors.origin, credentials: true }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      const allowedOrigins = config.cors.origins;
+
+      // Allow non-browser requests (no Origin header)
+      if (!origin) return callback(null, true);
+
+      // Wildcard: reflect any origin (required when credentials=true)
+      if (allowedOrigins.includes('*')) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+
+      return callback(new Error(`CORS blocked for origin: ${origin}`));
+    },
+    credentials: true,
+  })
+);
+app.use(express.json({ limit: '2mb' }));
+app.use(express.urlencoded({ extended: true, limit: '2mb' }));
 
 // Health check endpoint
 app.get('/health', (req, res) => {
@@ -38,7 +55,7 @@ if (process.env.VERCEL !== '1' && !process.env.AWS_LAMBDA_FUNCTION_NAME) {
   const server = app.listen(PORT, async () => {
     console.log(`🚀 InkDrop backend running on port ${PORT}`);
     console.log(`📝 Environment: ${config.nodeEnv}`);
-    console.log(`🔗 CORS enabled for: ${config.cors.origin}`);
+    console.log(`🔗 CORS enabled for: ${config.cors.origins.join(', ')}`);
     
     // Test database connection
     try {
