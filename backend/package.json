@@ -4,13 +4,12 @@
   "description": "Backend for InkDrop - a draft-first blogging platform",
   "main": "dist/server.js",
   "scripts": {
-    "dev": "node kill-port.js && nodemon src/server.ts",
+    "dev": "nodemon src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
     "vercel-build": "npm run build",
     "db:migrate": "node -r ts-node/register src/db/migrate.ts",
-    "db:seed": "node -r ts-node/register src/db/seed.ts",
-    "kill-port": "node kill-port.js"
+    "db:seed": "node -r ts-node/register src/db/seed.ts"
   },
   "keywords": [
     "blog",
