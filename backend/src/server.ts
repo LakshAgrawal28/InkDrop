@@ -53,7 +53,7 @@ if (process.env.VERCEL !== '1' && !process.env.AWS_LAMBDA_FUNCTION_NAME) {
   server.on('error', (error: any) => {
     if (error.code === 'EADDRINUSE') {
       console.error(`\n❌ Port ${PORT} is already in use!`);
-      console.error(`💡 Run: npm run kill-port\n`);
+      console.error(`💡 Please free up port ${PORT} manually and restart.\n`);
       process.exit(1);
     } else {
       console.error('Server error:', error);
