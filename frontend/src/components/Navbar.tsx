@@ -83,8 +83,9 @@ export default function Navbar() {
               </span>
             </Link>
  
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-8">
+            <div className="flex items-center space-x-4 md:space-x-8">
+              {/* Desktop Navigation */}
+              <div className="hidden md:flex items-center space-x-8">
               {false && (
                 <a
                   href="https://lakshdoes.tech"
@@ -176,7 +177,73 @@ export default function Navbar() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                   </svg>
                 )}
-              </button>
+              </div>
+
+              {/* About Me Toggle */}
+              <div ref={aboutRef} className="relative flex items-center">
+                <button
+                  onClick={() => setIsAboutOpen(!isAboutOpen)}
+                  className={`w-9 h-9 rounded-full overflow-hidden border-2 transition-all duration-200 ${
+                    isAboutOpen
+                      ? 'border-black dark:border-white'
+                      : 'border-neutral-200 dark:border-neutral-800 hover:border-neutral-300 dark:hover:border-neutral-700'
+                  }`}
+                  aria-label="About me"
+                >
+                  <img
+                    src="https://res.cloudinary.com/dmxfjmmqn/image/upload/v1779399341/inkdrop/laksh-profile.jpg"
+                    alt="Laksh Agrawal"
+                    className="w-full h-full object-cover"
+                  />
+                </button>
+
+                {/* About Me Panel */}
+                {isAboutOpen && (
+                  <div className="absolute top-[calc(100%+16px)] right-0 w-72 animate-scale-in origin-top-right z-[9999]">
+                    <div className="bg-white/95 dark:bg-[#1a1b1f]/95 backdrop-blur-xl border border-neutral-200 dark:border-neutral-800 rounded-2xl shadow-2xl overflow-hidden">
+                      <div className="p-5 pb-4 text-center border-b border-neutral-100 dark:border-neutral-800">
+                        <div className="w-16 h-16 rounded-full overflow-hidden mx-auto mb-3 border-2 border-neutral-200 dark:border-neutral-700 shadow-md">
+                          <img
+                            src="https://res.cloudinary.com/dmxfjmmqn/image/upload/v1779399341/inkdrop/laksh-profile.jpg"
+                            alt="Laksh Agrawal"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <h3 className="text-base font-bold text-neutral-900 dark:text-white font-sans tracking-wide">
+                          Laksh Agrawal
+                        </h3>
+                        <p className="text-[11px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400 mt-1 font-medium">
+                          Developer &amp; Creator
+                        </p>
+                      </div>
+                      <div className="p-3 space-y-0.5">
+                        {socialLinks.map((link) => (
+                          <a
+                            key={link.label}
+                            href={link.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800/60 transition-all duration-200 group/link"
+                          >
+                            <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 group-hover/link:bg-black group-hover/link:text-white dark:group-hover/link:bg-white dark:group-hover/link:text-black transition-all duration-200">
+                              {link.icon}
+                            </span>
+                            <span className="text-sm font-medium tracking-wide">{link.label}</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5 ml-auto text-neutral-400 dark:text-neutral-600 group-hover/link:text-neutral-600 dark:group-hover/link:text-neutral-400 transition-colors">
+                              <path fillRule="evenodd" d="M5.22 14.78a.75.75 0 010-1.06l7.22-7.22H8.75a.75.75 0 010-1.5h5.5a.75.75 0 01.75.75v5.5a.75.75 0 01-1.5 0V6.56l-7.22 7.22a.75.75 0 01-1.06 0z" clipRule="evenodd" />
+                            </svg>
+                          </a>
+                        ))}
+                      </div>
+                      <div className="px-5 py-3 border-t border-neutral-100 dark:border-neutral-800 text-center">
+                        <p className="text-[11px] text-neutral-500 dark:text-neutral-500">
+                          Made with <span className="text-red-500">❤️</span> by Laksh Agrawal
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
@@ -248,88 +315,7 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* ─── Floating About Me Button (bottom-right) ─── */}
-      {false && (
-        <div ref={aboutRef} className="fixed bottom-6 right-6 z-[9999]">
-          {/* Toggle Button — profile pic circle */}
-          <button
-            onClick={() => setIsAboutOpen(!isAboutOpen)}
-            className={`group relative w-14 h-14 rounded-full overflow-hidden border-2 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-110 active:scale-95 ${
-              isAboutOpen
-                ? 'border-black dark:border-white scale-110'
-                : 'border-neutral-300 dark:border-neutral-700'
-            }`}
-            aria-label="About me"
-          >
-            <img
-              src="https://res.cloudinary.com/dmxfjmmqn/image/upload/v1779399341/inkdrop/laksh-profile.jpg"
-              alt="Laksh Agrawal"
-              className="w-full h-full object-cover"
-            />
-            {/* Subtle info badge */}
-            <span className="absolute bottom-0 right-0 w-5 h-5 bg-black dark:bg-white rounded-full flex items-center justify-center border-2 border-white dark:border-[#0b0c10] transform translate-x-0.5 translate-y-0.5">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3 text-white dark:text-black">
-                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clipRule="evenodd" />
-              </svg>
-            </span>
-          </button>
 
-          {/* About Me Panel */}
-          {isAboutOpen && (
-            <div
-              className="absolute bottom-[calc(100%+12px)] right-0 w-72 animate-scale-in origin-bottom-right"
-              style={{ transformOrigin: 'bottom right' }}
-            >
-              <div className="bg-white/90 dark:bg-[#1a1b1f]/90 backdrop-blur-xl border border-neutral-200 dark:border-neutral-800 rounded-2xl shadow-2xl overflow-hidden">
-                {/* Header with profile */}
-                <div className="p-5 pb-4 text-center border-b border-neutral-100 dark:border-neutral-800">
-                  <div className="w-20 h-20 rounded-full overflow-hidden mx-auto mb-3 border-2 border-neutral-200 dark:border-neutral-700 shadow-md">
-                    <img
-                      src="https://res.cloudinary.com/dmxfjmmqn/image/upload/v1779399341/inkdrop/laksh-profile.jpg"
-                      alt="Laksh Agrawal"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <h3 className="text-base font-bold text-neutral-900 dark:text-white font-sans tracking-wide">
-                    Laksh Agrawal
-                  </h3>
-                  <p className="text-[11px] uppercase tracking-widest text-neutral-500 dark:text-neutral-400 mt-1 font-medium">
-                    Developer &amp; Creator
-                  </p>
-                </div>
-
-                {/* Social Links */}
-                <div className="p-3 space-y-0.5">
-                  {socialLinks.map((link) => (
-                    <a
-                      key={link.label}
-                      href={link.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800/60 transition-all duration-200 group/link"
-                    >
-                      <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 group-hover/link:bg-black group-hover/link:text-white dark:group-hover/link:bg-white dark:group-hover/link:text-black transition-all duration-200">
-                        {link.icon}
-                      </span>
-                      <span className="text-sm font-medium tracking-wide">{link.label}</span>
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5 ml-auto text-neutral-400 dark:text-neutral-600 group-hover/link:text-neutral-600 dark:group-hover/link:text-neutral-400 transition-colors">
-                        <path fillRule="evenodd" d="M5.22 14.78a.75.75 0 010-1.06l7.22-7.22H8.75a.75.75 0 010-1.5h5.5a.75.75 0 01.75.75v5.5a.75.75 0 01-1.5 0V6.56l-7.22 7.22a.75.75 0 01-1.06 0z" clipRule="evenodd" />
-                      </svg>
-                    </a>
-                  ))}
-                </div>
-
-                {/* Footer */}
-                <div className="px-5 py-3 border-t border-neutral-100 dark:border-neutral-800 text-center">
-                  <p className="text-[11px] text-neutral-500 dark:text-neutral-500">
-                    Made with <span className="text-red-500">❤️</span> by Laksh Agrawal
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
     </>
   );
 }
