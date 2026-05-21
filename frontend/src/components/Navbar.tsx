@@ -257,7 +257,7 @@ export default function Navbar() {
           aria-label="About me"
         >
           <img
-            src="/me.jpeg"
+            src="https://res.cloudinary.com/dmxfjmmqn/image/upload/v1779399341/inkdrop/laksh-profile.jpg"
             alt="Laksh Agrawal"
             className="w-full h-full object-cover"
           />
@@ -280,7 +280,7 @@ export default function Navbar() {
               <div className="p-5 pb-4 text-center border-b border-neutral-100 dark:border-neutral-800">
                 <div className="w-20 h-20 rounded-full overflow-hidden mx-auto mb-3 border-2 border-neutral-200 dark:border-neutral-700 shadow-md">
                   <img
-                    src="/me.jpeg"
+                    src="https://res.cloudinary.com/dmxfjmmqn/image/upload/v1779399341/inkdrop/laksh-profile.jpg"
                     alt="Laksh Agrawal"
                     className="w-full h-full object-cover"
                   />
