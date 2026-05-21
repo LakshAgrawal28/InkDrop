@@ -4,6 +4,7 @@ import { config } from './config';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 import authRoutes from './routes/auth';
 import postRoutes from './routes/posts';
+import uploadRoutes from './routes/upload';
 import { pool } from './db';
 
 const app = express();
@@ -21,6 +22,7 @@ app.get('/health', (req, res) => {
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/posts', postRoutes);
+app.use('/api/upload', uploadRoutes);
 
 // Error handling
 app.use(notFoundHandler);

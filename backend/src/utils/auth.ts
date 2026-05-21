@@ -28,12 +28,14 @@ export function generateAccessToken(userId: string): string {
   );
 }
 
+import { v4 as uuidv4 } from 'uuid';
+
 /**
  * Generate JWT refresh token (long-lived)
  */
 export function generateRefreshToken(userId: string): string {
   return jwt.sign(
-    { userId, type: 'refresh' },
+    { userId, type: 'refresh', jti: uuidv4() },
     config.jwt.refreshSecret,
     { expiresIn: config.jwt.refreshExpiry }
   );

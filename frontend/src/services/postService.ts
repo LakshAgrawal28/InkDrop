@@ -98,4 +98,18 @@ export const postService = {
   async deletePost(id: string): Promise<void> {
     await api.delete(`/posts/${id}`);
   },
+
+  /**
+   * Upload an image to Cloudinary
+   */
+  async uploadImage(file: File): Promise<{ imageUrl: string }> {
+    const formData = new FormData();
+    formData.append('image', file);
+    const response = await api.post('/upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  },
 };

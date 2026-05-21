@@ -1,6 +1,7 @@
 import { useState, FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import AuroraBackground from '../components/AuroraBackground';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -27,21 +28,21 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-ink-50 dark:bg-gray-900 px-4 transition-colors">
-      <div className="max-w-md w-full animate-scale-in">
+    <AuroraBackground fullHeight className="min-h-screen flex items-center justify-center bg-ink-50 dark:bg-gray-900 px-4 transition-colors">
+      <div className="max-w-md w-full animate-scale-in relative z-10">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-serif font-bold text-ink-900 dark:text-white mb-2">
             Welcome back
           </h1>
-          <p className="text-ink-600 dark:text-gray-400">
+          <p className="text-ink-600 dark:text-gray-400 font-medium">
             Sign in to continue writing
           </p>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-ink-200 dark:border-gray-700 p-8 hover-glow">
+        <div className="backdrop-blur-md bg-white/75 dark:bg-gray-800/75 rounded-2xl shadow-xl border border-white/20 dark:border-gray-700/40 p-8 hover-glow">
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+              <div className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-sm">
                 {error}
               </div>
             )}
@@ -55,7 +56,7 @@ export default function LoginPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="input"
+                className="input bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm"
                 placeholder="you@example.com"
                 required
                 autoFocus
@@ -71,7 +72,7 @@ export default function LoginPage() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="input"
+                className="input bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm"
                 placeholder="••••••••"
                 required
               />
@@ -80,7 +81,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full btn btn-primary"
+              className="w-full btn btn-primary py-2.5 font-semibold text-sm shadow-md"
             >
               {isLoading ? 'Signing in...' : 'Sign In'}
             </button>
@@ -89,13 +90,13 @@ export default function LoginPage() {
           <div className="mt-6 text-center">
             <p className="text-sm text-ink-600 dark:text-gray-400">
               Don't have an account?{' '}
-              <Link to="/register" className="text-ink-900 dark:text-white font-medium hover:underline">
+              <Link to="/register" className="text-ink-900 dark:text-white font-semibold hover:underline">
                 Sign up
               </Link>
             </p>
           </div>
         </div>
       </div>
-    </div>
+    </AuroraBackground>
   );
 }
